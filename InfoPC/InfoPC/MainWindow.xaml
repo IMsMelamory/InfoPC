@@ -1,0 +1,39 @@
+﻿<Window x:Class="InfoPC.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InfoPC"
+        mc:Ignorable="d"
+        Title="InfoPC" Height="200" Width="400">
+    <Window.Resources>
+        <Style x:Key="CopyAsLabel" TargetType="{x:Type TextBox}">
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0, 0, 0, 10" />
+        </Style>
+    </Window.Resources>
+        <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <StackPanel>
+                <TextBox Text="IP Адрес" Style="{DynamicResource CopyAsLabel}" />
+                <TextBox Text="Свободно на С:\" Style="{DynamicResource CopyAsLabel}"/>
+                <TextBox Text="Имя ПК" Style="{DynamicResource CopyAsLabel}"/>
+                <TextBox Text="Имя пользователя" Style="{DynamicResource CopyAsLabel}"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Column="1">
+            <StackPanel>
+                <TextBox Text ="{Binding IpAdress}"  Style="{DynamicResource CopyAsLabel}"/>
+                <TextBox Text="{Binding FreeDiskSpace}" Style="{DynamicResource CopyAsLabel}"/>
+                <TextBox Text ="{Binding PcName}" Style="{DynamicResource CopyAsLabel}"/>
+                <TextBox Text ="{Binding UserName}" Style="{DynamicResource CopyAsLabel}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
