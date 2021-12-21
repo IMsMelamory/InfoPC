@@ -24,6 +24,8 @@ namespace InfoPC
         {
             InitializeComponent();
             DataContext = new PCViewModel();
+            Left = SystemParameters.WorkArea.Width - Width;
+            Top = SystemParameters.WorkArea.Height - Height;
         }
     }
 }

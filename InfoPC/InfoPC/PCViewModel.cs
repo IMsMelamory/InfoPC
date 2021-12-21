@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 
 namespace InfoPC
@@ -10,24 +13,13 @@ namespace InfoPC
         public long FreeDiskSpace { get; set; }
         public string PcName { get; set; }
         public string UserName { get; set; }
-        public string IpAdress { get; set; }
+        public List<string> Ipv4Adress { get; set; }
         public PCViewModel()
         {
-            var startTimeSpan = TimeSpan.Zero;
-            var periodTimeSpan = TimeSpan.FromMinutes(5);
-
-            var timer = new Timer((e) =>
-            {
-                GetFreeSpace();
-                GetUserName();
-                GetPCName();
-                GetIPAdress();
-            }, null, startTimeSpan, periodTimeSpan);
-
-            
-
-
-
+            GetFreeSpace();
+            GetUserName();
+            GetPCName();
+            Ipv4Adress = GetIPv4Adresss();
         }
 
         private void GetFreeSpace()
@@ -46,9 +38,10 @@ namespace InfoPC
         {
             PcName = Environment.MachineName;
         }
-        private void GetIPAdress()
+        private static List<string> GetIPv4Adresss()
         {
-            IpAdress= Dns.GetHostAddresses(Dns.GetHostName())[0].ToString();
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            return (from ip in host.AddressList where ip.AddressFamily == AddressFamily.InterNetwork select ip.ToString()).ToList();
         }
     }
 }

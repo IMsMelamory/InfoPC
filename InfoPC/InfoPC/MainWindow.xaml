@@ -5,23 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InfoPC"
         mc:Ignorable="d"
-        Title="InfoPC" Height="200" Width="400">
-    <Window.Resources>
+        Topmost ="True"
+        AllowsTransparency="True" 
+        WindowStyle="None"
+        Title="InfoPC" 
+        Height="200" Width="400">
+    <Window.Background>
+        <SolidColorBrush Opacity="0.3" Color="Gray"/>
+    </Window.Background>
+    <Window.Resources >
+        <Style  TargetType="{x:Type ListView}">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
         <Style x:Key="CopyAsLabel" TargetType="{x:Type TextBox}">
             <Setter Property="IsReadOnly" Value="True" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="13" />
             <Setter Property="Margin" Value="0, 0, 0, 10" />
         </Style>
     </Window.Resources>
-        <Grid>
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <StackPanel>
-                <TextBox Text="IP Адрес" Style="{DynamicResource CopyAsLabel}" />
+                <TextBox Text="IPv4 Адрес" Style="{DynamicResource CopyAsLabel}" Margin="0,0,0,25" />
                 <TextBox Text="Свободно на С:\" Style="{DynamicResource CopyAsLabel}"/>
                 <TextBox Text="Имя ПК" Style="{DynamicResource CopyAsLabel}"/>
                 <TextBox Text="Имя пользователя" Style="{DynamicResource CopyAsLabel}"/>
@@ -29,10 +47,11 @@
         </Grid>
         <Grid Grid.Column="1">
             <StackPanel>
-                <TextBox Text ="{Binding IpAdress}"  Style="{DynamicResource CopyAsLabel}"/>
+                <ListView ItemsSource="{Binding Ipv4Adress}" />
                 <TextBox Text="{Binding FreeDiskSpace}" Style="{DynamicResource CopyAsLabel}"/>
                 <TextBox Text ="{Binding PcName}" Style="{DynamicResource CopyAsLabel}"/>
                 <TextBox Text ="{Binding UserName}" Style="{DynamicResource CopyAsLabel}"/>
+                
             </StackPanel>
         </Grid>
     </Grid>
