@@ -11,7 +11,7 @@
         Title="InfoPC" 
         Height="200" Width="400">
     <Window.Background>
-        <SolidColorBrush Opacity="0.3" Color="Gray"/>
+        <SolidColorBrush Opacity="0" Color="Gray"/>
     </Window.Background>
     <Window.Resources >
         <Style  TargetType="{x:Type ListView}">
@@ -40,6 +40,7 @@
         <Grid Grid.Column="0">
             <StackPanel>
                 <TextBox Text="IPv4 Адрес" Style="{DynamicResource CopyAsLabel}" Margin="0,0,0,25" />
+                <TextBox Text="IPv6 Адрес" Style="{DynamicResource CopyAsLabel}" />
                 <TextBox Text="Свободно на С:\" Style="{DynamicResource CopyAsLabel}"/>
                 <TextBox Text="Имя ПК" Style="{DynamicResource CopyAsLabel}"/>
                 <TextBox Text="Имя пользователя" Style="{DynamicResource CopyAsLabel}"/>
@@ -48,6 +49,7 @@
         <Grid Grid.Column="1">
             <StackPanel>
                 <ListView ItemsSource="{Binding Ipv4Adress}" />
+                <ListView ItemsSource="{Binding Ipv6Adress}" />
                 <TextBox Text="{Binding FreeDiskSpace}" Style="{DynamicResource CopyAsLabel}"/>
                 <TextBox Text ="{Binding PcName}" Style="{DynamicResource CopyAsLabel}"/>
                 <TextBox Text ="{Binding UserName}" Style="{DynamicResource CopyAsLabel}"/>

@@ -14,12 +14,15 @@ namespace InfoPC
         public string PcName { get; set; }
         public string UserName { get; set; }
         public List<string> Ipv4Adress { get; set; }
+        public List<string> Ipv6Adress { get; set; }
         public PCViewModel()
         {
+            
             GetFreeSpace();
             GetUserName();
             GetPCName();
-            Ipv4Adress = GetIPv4Adresss();
+            GetIPv4Adress();
+            GetIPv6Adress();
         }
 
         private void GetFreeSpace()
@@ -27,7 +30,7 @@ namespace InfoPC
             DriveInfo[] allDrives = DriveInfo.GetDrives();
             if (allDrives[0].IsReady == true)
             {
-                FreeDiskSpace = allDrives[0].AvailableFreeSpace / 1024 / 1024;
+                FreeDiskSpace = allDrives[0].AvailableFreeSpace / 1024 / 1024/1024;
             }
         }
         private void GetUserName()
@@ -38,11 +41,21 @@ namespace InfoPC
         {
             PcName = Environment.MachineName;
         }
-        private static List<string> GetIPv4Adresss()
+        private void  GetIPv4Adress()
         {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            return (from ip in host.AddressList where ip.AddressFamily == AddressFamily.InterNetwork select ip.ToString()).ToList();
+            Ipv4Adress = (from ip in Dns.GetHostEntry(Dns.GetHostName()).AddressList 
+                          where ip.AddressFamily == AddressFamily.InterNetwork 
+                          select ip.
+                          ToString()).
+                          ToList();
         }
-    }
+        private void GetIPv6Adress()
+        {
+            Ipv6Adress = (from ip in Dns.GetHostEntry(Dns.GetHostName()).AddressList 
+                          where ip.AddressFamily == AddressFamily.InterNetworkV6 
+                          select ip.
+                          ToString()).
+                          ToList();
+        }
 }
 
