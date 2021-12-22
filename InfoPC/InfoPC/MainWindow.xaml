@@ -11,7 +11,7 @@
         Title="InfoPC" 
         Height="200" Width="400">
     <Window.Background>
-        <SolidColorBrush Opacity="0" Color="Gray"/>
+        <SolidColorBrush Opacity="0.2" Color="Gray"/>
     </Window.Background>
     <Window.Resources >
         <Style  TargetType="{x:Type ListView}">
@@ -43,17 +43,27 @@
                 <TextBox Text="IPv6 Адрес" Style="{DynamicResource CopyAsLabel}" />
                 <TextBox Text="Свободно на С:\" Style="{DynamicResource CopyAsLabel}"/>
                 <TextBox Text="Имя ПК" Style="{DynamicResource CopyAsLabel}"/>
+                <TextBox Text="Имя домена" Style="{DynamicResource CopyAsLabel}"/>
                 <TextBox Text="Имя пользователя" Style="{DynamicResource CopyAsLabel}"/>
             </StackPanel>
         </Grid>
         <Grid Grid.Column="1">
             <StackPanel>
-                <ListView ItemsSource="{Binding Ipv4Adress}" />
+                <ListView ItemsSource="{Binding Ipv4Adress}"/>
                 <ListView ItemsSource="{Binding Ipv6Adress}" />
-                <TextBox Text="{Binding FreeDiskSpace}" Style="{DynamicResource CopyAsLabel}"/>
-                <TextBox Text ="{Binding PcName}" Style="{DynamicResource CopyAsLabel}"/>
-                <TextBox Text ="{Binding UserName}" Style="{DynamicResource CopyAsLabel}"/>
-                
+                <TextBox Text="{Binding FreeDiskSpace}"
+                         Style="{DynamicResource CopyAsLabel}"/>
+                <TextBox Text ="{Binding PcName}" 
+                         Style="{DynamicResource CopyAsLabel}"/>
+                <TextBox Text ="{Binding DomainName}" 
+                         Style="{DynamicResource CopyAsLabel}"/>
+                <TextBox Text ="{Binding UserName}" 
+                         Style="{DynamicResource CopyAsLabel}"/>
+                <Button Command="{Binding Path=UpdateInfoCommand}" 
+                        Content="Обновить"
+                        Height="20" 
+                        Width="80"/>
+
             </StackPanel>
         </Grid>
     </Grid>
