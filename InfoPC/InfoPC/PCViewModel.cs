@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Windows;
 
 namespace InfoPC
 {
@@ -16,7 +17,6 @@ namespace InfoPC
         private string _pcName;
         private string _userName;
         private string _domainName;
-
         public long FreeDiskSpace
         {
             get => _freeDiskSpace;
@@ -76,9 +76,12 @@ namespace InfoPC
         {
             UpdateInfo();
             _timer = new Timer(Callback, null, 1000 * 5, Timeout.Infinite);
-            UpdateInfoCommand = new RelayCommand(UpdateInfoExecute);
+            CopyUserNameCommand = new RelayCommand(CopyUserNameExecute);
+            CopyComputerNameCommand = new RelayCommand(CopyComputerNameExecute);
         }
-        public RelayCommand UpdateInfoCommand { get; set; }
+        
+        public RelayCommand CopyUserNameCommand { get; set; }
+        public RelayCommand CopyComputerNameCommand { get; set; }
         private void GetFreeSpace()
         {
             DriveInfo[] allDrives = DriveInfo.GetDrives();
@@ -119,9 +122,17 @@ namespace InfoPC
         {
             UpdateInfo();
         }
-        private void UpdateInfoExecute(object arg)
+        private void CopyUserNameExecute(object arg)
         {
-            UpdateInfo();
+            copyToClipboard(UserName);
+        }
+        private void CopyComputerNameExecute(object arg)
+        {
+            copyToClipboard(PcName);
+        }
+        private void copyToClipboard(string ipv6)
+        {
+            Clipboard.SetData(DataFormats.Text, (Object)ipv6);
         }
         private void UpdateInfo()
         {
