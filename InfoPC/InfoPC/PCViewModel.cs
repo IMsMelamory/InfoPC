@@ -75,7 +75,7 @@ namespace InfoPC
         public PCViewModel()
         {
             UpdateInfo();
-            _timer = new Timer(Callback, null, 1000*10, Timeout.Infinite);
+            _timer = new Timer(Callback, null, 1000 * 5, Timeout.Infinite);
             UpdateInfoCommand = new RelayCommand(UpdateInfoExecute);
         }
         public RelayCommand UpdateInfoCommand { get; set; }
@@ -118,7 +118,6 @@ namespace InfoPC
         private void Callback(Object state)
         {
             UpdateInfo();
-            _timer.Change(1000*10, Timeout.Infinite);
         }
         private void UpdateInfoExecute(object arg)
         {
