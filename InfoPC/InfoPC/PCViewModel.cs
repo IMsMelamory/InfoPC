@@ -154,7 +154,7 @@ namespace InfoPC
         }
         private void CopyIPToClipboard(List<string> lst)
         {
-            string output = string.Join(" ", lst.ToArray());
+            string output = string.Join(Environment.NewLine, lst.ToArray());
             copyToClipboard(output);
         }
         private void UpdateInfo()
