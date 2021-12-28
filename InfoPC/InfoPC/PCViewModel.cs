@@ -76,12 +76,18 @@ namespace InfoPC
         {
             UpdateInfo();
             _timer = new Timer(Callback, null, 1000 * 5, Timeout.Infinite);
-            CopyUserNameCommand = new RelayCommand(CopyUserNameExecute);
-            CopyComputerNameCommand = new RelayCommand(CopyComputerNameExecute);
+            CopyUserNameCommand = new RelayCommand(CopyUserNameExecute, CopyUserNameExecute => PcName != null);
+            CopyComputerNameCommand = new RelayCommand(CopyComputerNameExecute, CopyComputerNameExecute => PcName != null);
+            CopyDomainNameCommand = new RelayCommand(CopyDomainNameExecute, CopyDomainNameExecute => DomainName != null );
+            CopyIPv4Command = new RelayCommand(CopyIPv4Execute, CopyIPv4Execute => Ipv4Adress.Count != 0);
+            CopyIPv6Command = new RelayCommand(CopyIPv6Execute, CopyIPv4Execute => Ipv6Adress.Count != 0);
         }
         
         public RelayCommand CopyUserNameCommand { get; set; }
         public RelayCommand CopyComputerNameCommand { get; set; }
+        public RelayCommand CopyDomainNameCommand { get; set; }
+        public RelayCommand CopyIPv4Command { get; set; }
+        public RelayCommand CopyIPv6Command { get; set; }
         private void GetFreeSpace()
         {
             DriveInfo[] allDrives = DriveInfo.GetDrives();
@@ -122,6 +128,14 @@ namespace InfoPC
         {
             UpdateInfo();
         }
+        private void CopyIPv4Execute(object arg)
+        {
+            CopyIPToClipboard(Ipv4Adress);
+        }
+        private void CopyIPv6Execute(object arg)
+        {
+            CopyIPToClipboard(Ipv6Adress);
+        }
         private void CopyUserNameExecute(object arg)
         {
             copyToClipboard(UserName);
@@ -130,9 +144,18 @@ namespace InfoPC
         {
             copyToClipboard(PcName);
         }
-        private void copyToClipboard(string ipv6)
+        private void CopyDomainNameExecute(object arg)
         {
-            Clipboard.SetData(DataFormats.Text, (Object)ipv6);
+            copyToClipboard(DomainName);
+        }
+        private void copyToClipboard(string copyText)
+        {
+            Clipboard.SetData(DataFormats.Text, (Object)copyText);
+        }
+        private void CopyIPToClipboard(List<string> lst)
+        {
+            string output = string.Join(" ", lst.ToArray());
+            copyToClipboard(output);
         }
         private void UpdateInfo()
         {
