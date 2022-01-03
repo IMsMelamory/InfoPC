@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
 using System.Windows;
@@ -13,6 +14,7 @@ namespace InfoPC
     {
         private List<string> _ipv4Adress;
         private List<string> _ipv6Adress;
+        private List<string> _nameAdapter = new List<string>();
         private long _freeDiskSpace;
         private string _pcName;
         private string _userName;
@@ -68,6 +70,15 @@ namespace InfoPC
             set
             {
                 _ipv6Adress = value;
+                OnPropertyChanged();
+            }
+        }
+        public List<string> NameAdapter
+        {
+            get => _nameAdapter;
+            set
+            {
+                _nameAdapter = value;
                 OnPropertyChanged();
             }
         }
@@ -157,6 +168,14 @@ namespace InfoPC
             string output = string.Join(Environment.NewLine, lst.ToArray());
             copyToClipboard(output);
         }
+        private void GetAdapterName()
+        {
+            NetworkInterface[] networks = NetworkInterface.GetAllNetworkInterfaces();
+            foreach (NetworkInterface adapter in networks)
+            {
+                NameAdapter.Add(adapter.Name);
+            }
+        }
         private void UpdateInfo()
         {
             GetFreeSpace();
@@ -165,6 +184,7 @@ namespace InfoPC
             GetDomainName();
             GetIPv4Adress();
             GetIPv6Adress();
+            GetAdapterName();
         }
     }
 }

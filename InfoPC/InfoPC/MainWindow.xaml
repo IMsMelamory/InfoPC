@@ -8,12 +8,20 @@
         d:DataContext="{d:DesignInstance Type=local:PCViewModel}"
         Topmost ="True"
         AllowsTransparency="True" 
+        Background="Transparent"
         WindowStyle="None"
         Title="InfoPC" 
+        ShowInTaskbar="False"
         Height="250" Width="350">
-    <Window.Background>
-        <SolidColorBrush Opacity="0.2" Color="Gray"/>
-    </Window.Background>
+    <Window.Style>
+        <Style  TargetType="{x:Type Window}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.01"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
     <Window.Resources >
         <Style  TargetType="{x:Type ListView}">
             <Setter Property="BorderThickness" Value="0" />
@@ -46,6 +54,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <TextBox Grid.Row="0" 
                  Grid.Column="1" 
@@ -71,6 +80,10 @@
                  Grid.Column="1" 
                  Text="Имя пользователя" 
                  Style="{StaticResource CopyAsLabel}"/>
+        <TextBox Grid.Row="6" 
+                 Grid.Column="1" 
+                 Text="Адаптеры" 
+                 Style="{StaticResource CopyAsLabel}"/>
         <ListView Grid.Row="0" 
                   Grid.Column="2" 
                   ItemsSource="{Binding Ipv4Adress}">
@@ -84,6 +97,16 @@
         <ListView Grid.Row="1" 
                   Grid.Column="2" 
                   ItemsSource="{Binding Ipv6Adress}" >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBox Text="{Binding Mode=OneWay}"
+                             Style="{StaticResource CopyAsLabel}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <ListView Grid.Row="6" 
+                  Grid.Column="2" 
+                  ItemsSource="{Binding NameAdapter}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBox Text="{Binding Mode=OneWay}"
