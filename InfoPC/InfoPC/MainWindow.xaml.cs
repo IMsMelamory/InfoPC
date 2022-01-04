@@ -1,8 +1,4 @@
 ﻿using System.Windows;
-using System.Drawing;
-using System;
-using System.Windows.Forms;
-using Hardcodet.Wpf.TaskbarNotification;
 
 namespace InfoPC
 {
