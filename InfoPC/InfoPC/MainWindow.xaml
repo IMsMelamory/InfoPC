@@ -12,7 +12,14 @@
         WindowStyle="None"
         ShowInTaskbar="False"
         Title="InfoPC" 
-        Height="250" Width="350">
+        Height="210" Width="320">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="View\GenericResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Window.Background>
         <SolidColorBrush Opacity="0.2" Color="Gray"/>
     </Window.Background>
@@ -25,33 +32,13 @@
             </Style.Triggers>
         </Style>
     </Window.Style>
-    <Window.Resources >
-        <Style  TargetType="{x:Type ListView}">
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="Focusable" Value="False" />
-        </Style>
-        <Style x:Key="CopyAsLabel" TargetType="{x:Type TextBox}">
-            <Setter Property="IsReadOnly" Value="True" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="TextWrapping" Value="Wrap" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Margin" Value="0,0,0,10"/>
-
-        </Style>
-    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+        <Grid.RowDefinitions >
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -59,123 +46,106 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <Border Grid.Row="0" 
+                BorderThickness="0 0 0 1"
+                Grid.ColumnSpan="2"
+                BorderBrush="White">
+        </Border>
+        <Border Grid.Row="1" 
+                BorderThickness="0 0 0 1"
+                Grid.ColumnSpan="2"
+                BorderBrush="White">
+        </Border>
+        <Border Grid.Row="2" 
+                BorderThickness="0 0 0 1"
+                Grid.ColumnSpan="2"
+                BorderBrush="White">
+        </Border>
+        <Border Grid.Row="3" 
+                BorderThickness="0 0 0 1"
+                Grid.ColumnSpan="2"
+                BorderBrush="White">
+        </Border>
+        <Border Grid.Row="4" 
+                BorderThickness="0 0 0 1"
+                Grid.ColumnSpan="2"
+                BorderBrush="White">
+        </Border>
+        <Border Grid.Row="5" 
+                BorderThickness="0 0 0 1"
+                Grid.ColumnSpan="2"
+                BorderBrush="White">
+        </Border>
         <TextBox Grid.Row="0" 
-                 Grid.Column="1" 
-                 Text="IPv4 Адрес" 
-                 Style="{StaticResource CopyAsLabel}" />
+                 Grid.Column="0"
+                 Text="IPv4 Адрес" />
         <TextBox Grid.Row="1" 
-                 Grid.Column="1" 
-                Text="IPv6 Адрес" 
-                Style="{StaticResource CopyAsLabel}" />
+                 Grid.Column="0" 
+                Text="IPv6 Адрес" />
         <TextBox Grid.Row="2" 
-                 Grid.Column="1" 
-                Text="Свободно(GB)" 
-                Style="{StaticResource CopyAsLabel}"/>
+                 Grid.Column="0" 
+                Text="Свободно(GB)" />
         <TextBox Grid.Row="3" 
-                 Grid.Column="1" 
-                 Text="Имя ПК" 
-                 Style="{StaticResource CopyAsLabel}"/>
+                 Grid.Column="0" 
+                 Text="Имя ПК" />
         <TextBox Grid.Row="4" 
-                 Grid.Column="1" 
-                 Text="Имя домена" 
-                 Style="{StaticResource CopyAsLabel}"/>
+                 Grid.Column="0" 
+                 Text="Имя домена" />
         <TextBox Grid.Row="5" 
-                 Grid.Column="1" 
-                 Text="Имя пользователя" 
-                 Style="{StaticResource CopyAsLabel}"/>
+                 Grid.Column="0" 
+                 Text="Имя пользователя" />
         <TextBox Grid.Row="6" 
-                 Grid.Column="1" 
-                 Text="Адаптеры" 
-                 Style="{StaticResource CopyAsLabel}"/>
+                 Grid.Column="0" 
+                 Text="Версия SecureTower" />
         <ListView Grid.Row="0" 
-                  Grid.Column="2" 
+                  Grid.Column="1" 
                   ItemsSource="{Binding Ipv4Adress}">
             <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBox Text="{Binding Mode=OneWay}"
-                             Style="{StaticResource CopyAsLabel}"/>
-                </DataTemplate>
+               <DataTemplate>
+                  <TextBox Text="{Binding Mode=OneWay}"/>
+               </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
         <ListView Grid.Row="1" 
-                  Grid.Column="2" 
+                  Grid.Column="1" 
                   ItemsSource="{Binding Ipv6Adress}" >
             <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBox Text="{Binding Mode=OneWay}"
-                             Style="{StaticResource CopyAsLabel}"/>
-                </DataTemplate>
+               <DataTemplate>
+                  <TextBox Text="{Binding Mode=OneWay}"/>
+               </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <ListView Grid.Row="6" 
-                  Grid.Column="2" 
-                  ItemsSource="{Binding NameAdapter}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBox Text="{Binding Mode=OneWay}"
-                             Style="{StaticResource CopyAsLabel}"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <TextBox Grid.Row="6" 
+                  Grid.Column="1" 
+                  Text="{Binding ProductVersion}">
+        </TextBox>
         <TextBox Grid.Row="2" 
-                 Grid.Column="2" 
-                 Text="{Binding FreeDiskSpace}"
-                 Style="{StaticResource CopyAsLabel}"/>
+                 Grid.Column="1" 
+                 Text="{Binding FreeDiskSpace}"/>
         <TextBox Grid.Row="3" 
-                 Grid.Column="2" 
-                 Text ="{Binding PcName}" 
-                 Style="{StaticResource CopyAsLabel}"/>
+                 Grid.Column="1" 
+                 Text ="{Binding PcName}" />
         <TextBox Grid.Row="4" 
-                 Grid.Column="2" 
-                 Text ="{Binding DomainName}" 
-                 Style="{StaticResource CopyAsLabel}"/>
+                 Grid.Column="1" 
+                 Text ="{Binding DomainName}" />
         <TextBox Grid.Row="5" 
-                 Grid.Column="2" 
-                 Text ="{Binding UserName}" 
-                 Style="{StaticResource CopyAsLabel}"/>
-        <Button Grid.Row="0" 
-                Grid.Column="0" 
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                Margin="0,0,0,10"
-                Height="10"
-                Width="10"
-                Command="{Binding CopyIPv4Command}"/>
-        <Button Grid.Row="1" 
-                Grid.Column="0" 
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                Margin="0,0,0,10"
-                Height="10"
-                Width="10"
-                Command="{Binding CopyIPv6Command}"/>
-        <Button Grid.Row="3" 
-                Grid.Column="0" 
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Margin="0,0,0,10"
-                Height="10"
-                Width="10"
-                Command="{Binding CopyComputerNameCommand}"/>
-        <Button Grid.Row="4" 
-                Grid.Column="0"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Margin="0,0,0,10"
-                Height="10"
-                Width="10"
-                Command="{Binding CopyDomainNameCommand}"/>
-        <Button Grid.Row="5" 
-                Grid.Column="0"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Margin="0,0,0,10"
-                Height="10"
-                Width="10"
-                Command="{Binding CopyUserNameCommand}"/>
-        <tb:TaskbarIcon
-      IconSource="pack://application:,,,/Images/main.ico"
-      ToolTipText="Info PC" />
-    </Grid>
+                 Grid.Column="1" 
+                 Text ="{Binding UserName}" />
+        <tb:TaskbarIcon IconSource="pack://application:,,,/Images/icon.ico"
+                        ToolTipText="Info PC" >
+            <tb:TaskbarIcon.ContextMenu>
+                 <ContextMenu>
+                 <MenuItem Header="Копировать IPv4" Command="{Binding CopyIPv4Command}"/>
+                 <MenuItem Header="Копировать IPv6" Command="{Binding CopyIPv6Command}" />
+                 <MenuItem Header="Копировать Имя ПК" Command="{Binding CopyComputerNameCommand}" />
+                 <MenuItem Header="Копировать Имя юзера" Command="{Binding CopyUserNameCommand}" />
+                 <MenuItem Header="Копировать Имя домена" Command="{Binding CopyDomainNameCommand}" />
+                 <MenuItem Header="Копировать Номер версии" Command="{Binding CopyProductVersionCommand}" />
+                 <MenuItem Header="Выход" Command="{Binding CloseWindowsCommand}">
+                 </MenuItem>
+                 </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+        </Grid>
 
 </Window>

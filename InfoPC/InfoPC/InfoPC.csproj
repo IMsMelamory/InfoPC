@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\main.ico" />
+    <None Remove="Images\icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Images\main.ico">
+    <Resource Include="Images\icon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

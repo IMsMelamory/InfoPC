@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace InfoPC
         private string _pcName;
         private string _userName;
         private string _domainName;
+        private string _productVersion;
+        private static Timer _timer;
         public long FreeDiskSpace
         {
             get => _freeDiskSpace;
@@ -55,6 +58,15 @@ namespace InfoPC
                 OnPropertyChanged();
             }
         }
+        public string ProductVersion
+        {
+            get => _productVersion;
+            set
+            {
+                _productVersion = value;
+                OnPropertyChanged();
+            }
+        }
         public List<string> Ipv4Adress
         {
             get => _ipv4Adress;
@@ -82,7 +94,7 @@ namespace InfoPC
                 OnPropertyChanged();
             }
         }
-        private static Timer _timer;
+
         public PCViewModel()
         {
             UpdateInfo();
@@ -92,6 +104,8 @@ namespace InfoPC
             CopyDomainNameCommand = new RelayCommand(CopyDomainNameExecute, CopyDomainNameExecute => DomainName != null );
             CopyIPv4Command = new RelayCommand(CopyIPv4Execute, CopyIPv4Execute => Ipv4Adress.Count != 0);
             CopyIPv6Command = new RelayCommand(CopyIPv6Execute, CopyIPv4Execute => Ipv6Adress.Count != 0);
+            CopyProductVersionCommand = new RelayCommand(CopyProductVersionExecute, CopyProductVersionExecute  => ProductVersion != null );
+            CloseWindowsCommand = new RelayCommand(CloseWindowExecute);
         }
         
         public RelayCommand CopyUserNameCommand { get; set; }
@@ -99,6 +113,8 @@ namespace InfoPC
         public RelayCommand CopyDomainNameCommand { get; set; }
         public RelayCommand CopyIPv4Command { get; set; }
         public RelayCommand CopyIPv6Command { get; set; }
+        public RelayCommand CopyProductVersionCommand { get; set; }
+        public RelayCommand CloseWindowsCommand { get; set; }
         private void GetFreeSpace()
         {
             DriveInfo[] allDrives = DriveInfo.GetDrives();
@@ -138,6 +154,7 @@ namespace InfoPC
         private void Callback(Object state)
         {
             UpdateInfo();
+            _timer.Change(1000 * 10, Timeout.Infinite);
         }
         private void CopyIPv4Execute(object arg)
         {
@@ -159,23 +176,34 @@ namespace InfoPC
         {
             copyToClipboard(DomainName);
         }
+        private void CopyProductVersionExecute(object arg)
+        {
+            copyToClipboard(ProductVersion);
+        }
+        private void CloseWindowExecute(object arg)
+        {
+            Environment.Exit(0);
+        }
         private void copyToClipboard(string copyText)
         {
-            Clipboard.SetData(DataFormats.Text, (Object)copyText);
+            Clipboard.SetData(DataFormats.Text, copyText);
         }
-        private void CopyIPToClipboard(List<string> lst)
+        private void CopyIPToClipboard(List<string> myList)
         {
-            string output = string.Join(Environment.NewLine, lst.ToArray());
-            copyToClipboard(output);
+            copyToClipboard(string.Join(Environment.NewLine, myList.ToArray()));
         }
-        private void GetAdapterName()
+        private void GetVersionNumber()
         {
-            NetworkInterface[] networks = NetworkInterface.GetAllNetworkInterfaces();
-            foreach (NetworkInterface adapter in networks)
-            {
-                NameAdapter.Add(adapter.Name);
-            }
+            ProductVersion = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\FalconGaze\SecureTower\ProductVersion", "Installed", null);
         }
+        /* private void GetAdapterName()
+         {
+             NetworkInterface[] networks = NetworkInterface.GetAllNetworkInterfaces();
+             foreach (NetworkInterface adapter in networks)
+             {
+                 NameAdapter.Add(adapter.Name);
+             }
+         }*/
         private void UpdateInfo()
         {
             GetFreeSpace();
@@ -184,7 +212,7 @@ namespace InfoPC
             GetDomainName();
             GetIPv4Adress();
             GetIPv6Adress();
-            GetAdapterName();
+            GetVersionNumber();
         }
     }
 }
