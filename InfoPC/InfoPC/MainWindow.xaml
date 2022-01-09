@@ -3,8 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:tb="http://www.hardcodet.net/taskbar"  
         xmlns:local="clr-namespace:InfoPC" 
+        xmlns:ineractivity="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:custom="clr-namespace:InfoPC.Behaviors" 
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:PCViewModel}"
         Topmost ="True"
@@ -12,7 +14,10 @@
         WindowStyle="None"
         ShowInTaskbar="False"
         Title="InfoPC" 
-        Height="210" Width="320">
+        Height="210" Width="330">
+    <ineractivity:Interaction.Behaviors>
+        <custom:MouseEnterBehaviors/>
+    </ineractivity:Interaction.Behaviors>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

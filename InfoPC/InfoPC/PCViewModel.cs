@@ -182,11 +182,15 @@ namespace InfoPC
         }
         private void CloseWindowExecute(object arg)
         {
+            Application.Current.Shutdown();
+        }
+        private void ChangeOpacity(object arg)
+        {
             Environment.Exit(0);
         }
         private void copyToClipboard(string copyText)
         {
-            Clipboard.SetData(DataFormats.Text, copyText);
+           Clipboard.SetData(DataFormats.Text, copyText);
         }
         private void CopyIPToClipboard(List<string> myList)
         {
@@ -214,6 +218,7 @@ namespace InfoPC
             GetIPv6Adress();
             GetVersionNumber();
         }
+        
     }
 }
 
