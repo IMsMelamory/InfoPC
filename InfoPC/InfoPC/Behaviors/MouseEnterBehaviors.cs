@@ -27,17 +27,16 @@ namespace InfoPC.Behaviors
         private void OnClick(object sender, RoutedEventArgs e)
         {
 
-            if (Mouse.GetPosition(Application.Current.MainWindow).X > 0)
+            if (Mouse.GetPosition(Application.Current.MainWindow).X <= Application.Current.MainWindow.Top && Mouse.GetPosition(Application.Current.MainWindow).X > 0)
             {
                 Application.Current.MainWindow.Opacity = 0;
-            }
-
-            
+               
+            }            
         }
         private void OnClick1(object sender, RoutedEventArgs e)
         {
 
-            if (Mouse.GetPosition(Application.Current.MainWindow).X < 0)
+            if (Mouse.GetPosition(Application.Current.MainWindow).X == 0 || Mouse.GetPosition(Application.Current.MainWindow).Y == 0)
             {
                 Application.Current.MainWindow.Opacity = 1;
             }
