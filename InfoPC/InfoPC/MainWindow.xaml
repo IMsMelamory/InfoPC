@@ -137,9 +137,18 @@
                  <MenuItem Header="Копировать Имя юзера" Command="{Binding CopyUserNameCommand}" />
                  <MenuItem Header="Копировать Имя домена" Command="{Binding CopyDomainNameCommand}" />
                  <MenuItem Header="Копировать Номер версии" Command="{Binding CopyProductVersionCommand}" />
-                 <MenuItem Header="Выход" Command="{Binding CloseWindowsCommand}">
-                 </MenuItem>
-                 </ContextMenu>
+                    <MenuItem Header="Выход" />
+                    <MenuItem Header="Names" ItemsSource="{Binding NameAdapter}">
+                        <MenuItem.ItemContainerStyle>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=MenuItem}, Path=DataContext.DisableEthenetCommand}" />
+                                <Setter Property="CommandParameter" Value="{Binding}" />
+                            </Style>
+                        </MenuItem.ItemContainerStyle>
+                    </MenuItem>
+
+
+                </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
         </Grid>

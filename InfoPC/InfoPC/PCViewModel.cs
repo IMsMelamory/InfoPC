@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -109,6 +110,8 @@ namespace InfoPC
             CopyIPv6Command = new RelayCommand(CopyIPv6Execute, CopyIPv4Execute => Ipv6Adress.Count != 0);
             CopyProductVersionCommand = new RelayCommand(CopyProductVersionExecute, CopyProductVersionExecute  => ProductVersion != null );
             CloseWindowsCommand = new RelayCommand(CloseWindowExecute);
+            DisableEthenetCommand = new RelayCommand(DisableEthenetExecute);
+            
         }
         
         public RelayCommand CopyUserNameCommand { get; set; }
@@ -118,6 +121,7 @@ namespace InfoPC
         public RelayCommand CopyIPv6Command { get; set; }
         public RelayCommand CopyProductVersionCommand { get; set; }
         public RelayCommand CloseWindowsCommand { get; set; }
+        public RelayCommand DisableEthenetCommand{ get; set; }
         private void GetFreeSpace()
         {
             DriveInfo[] allDrives = DriveInfo.GetDrives();
@@ -187,20 +191,22 @@ namespace InfoPC
         {
             Application.Current.Shutdown();
         }
-        private void ChangeOpacityExecute(object arg)
+        private void DisableEthenetExecute(object arg)
         {
-            [DllImport("user32.dll", SetLastError = true)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            static extern bool GetCursorPos(out System.Drawing.Point lpPoint);
-            System.Drawing.Point point;
-            GetCursorPos(out point);
-            var window = new Window();
-            System.Windows.Point screenCoordinates = Application.Current.MainWindow.PointToScreen(new System.Windows.Point(0, 0));
-            //MessageBox.Show(point.X.ToString() + " "+ screenCoordinates.X.ToString());
-            if (point.X >= 1500)
+            var s = arg.ToString();
+           
+            SelectQuery wmiQuery = new SelectQuery("SELECT * FROM Win32_NetworkAdapter WHERE NetConnectionId != NULL");
+            ManagementObjectSearcher searchProcedure = new ManagementObjectSearcher(wmiQuery);
+            var k = searchProcedure.Get();
+            var x = 0;
+            foreach (ManagementObject item in searchProcedure.Get())
             {
-                Application.Current.MainWindow.Opacity = 0;
-            };
+                //MessageBox.Show(item["NetConnectionId"].ToString());
+                if (item["NetConnectionId"].ToString() == arg.ToString())
+                {
+                    item.InvokeMethod("Disable", null);
+                }
+            }
         }
         private void copyToClipboard(string copyText)
         {
@@ -214,14 +220,14 @@ namespace InfoPC
         {
             ProductVersion = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\FalconGaze\SecureTower", "ProductVersion", null);
         }
-        /* private void GetAdapterName()
+         private void GetAdapterName()
          {
              NetworkInterface[] networks = NetworkInterface.GetAllNetworkInterfaces();
              foreach (NetworkInterface adapter in networks)
              {
                  NameAdapter.Add(adapter.Name);
              }
-         }*/
+         }
         private void UpdateInfo()
         {
             GetFreeSpace();
@@ -230,6 +236,7 @@ namespace InfoPC
             GetDomainName();
             GetIPv4Adress();
             GetIPv6Adress();
+            GetAdapterName();
             GetVersionNumber();
            
         }
