@@ -2,46 +2,38 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
-
-
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System;
 
 namespace InfoPC.Behaviors
 {
-    public class MouseEnterBehaviors: Behavior<FrameworkElement>
+    public class MouseEnterBehaviors: Behavior<Grid>
     {
         protected override void OnAttached()
         {
-            AssociatedObject.MouseEnter += OnClick;
-            AssociatedObject.MouseLeave += OnClick1;
+            Application.Current.MainWindow.MouseEnter += OnMouseEnter;
+            Application.Current.MainWindow.MouseLeave += OnMouseLeave;
+
             base.OnAttached();
-
         }
-
         protected override void OnDetaching()
         {
-            AssociatedObject.MouseLeave -= OnClick1;
-            AssociatedObject.MouseEnter -= OnClick;
+
+            Application.Current.MainWindow.MouseEnter -= OnMouseEnter;
+            Application.Current.MainWindow.MouseLeave -= OnMouseLeave;
             base.OnDetaching();
         }
 
-        private void OnClick(object sender, RoutedEventArgs e)
+        private void OnMouseEnter(object sender, RoutedEventArgs e)
         {
+            
+                AssociatedObject.Opacity = 0;
 
-            if (Mouse.GetPosition(Application.Current.MainWindow).X <= Application.Current.MainWindow.Top && Mouse.GetPosition(Application.Current.MainWindow).X > 0)
-            {
-                Application.Current.MainWindow.Opacity = 0;
-               
-            }            
-        }
-        private void OnClick1(object sender, RoutedEventArgs e)
+    }
+        private void OnMouseLeave(object sender, RoutedEventArgs e)
         {
-
-            if (Mouse.GetPosition(Application.Current.MainWindow).X == 0 || Mouse.GetPosition(Application.Current.MainWindow).Y == 0)
-            {
-                Application.Current.MainWindow.Opacity = 1;
-            }
-
-
+            AssociatedObject.Opacity = 1;
         }
 
     }

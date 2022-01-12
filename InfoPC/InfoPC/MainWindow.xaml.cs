@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Interop;
 
 namespace InfoPC
 {
@@ -12,9 +14,9 @@ namespace InfoPC
             InitializeComponent();
             DataContext = new PCViewModel();
             Left = SystemParameters.WorkArea.Width - Width;
-            Top = SystemParameters.WorkArea.Height - Height;
-
-        }
+            
+    }
+        
     }
     }
 

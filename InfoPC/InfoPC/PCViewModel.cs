@@ -6,8 +6,10 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 
 namespace InfoPC
 {
@@ -98,6 +100,7 @@ namespace InfoPC
         public PCViewModel()
         {
             UpdateInfo();
+            
             _timer = new Timer(Callback, null, 1000 * 5, Timeout.Infinite);
             CopyUserNameCommand = new RelayCommand(CopyUserNameExecute, CopyUserNameExecute => PcName != null);
             CopyComputerNameCommand = new RelayCommand(CopyComputerNameExecute, CopyComputerNameExecute => PcName != null);
@@ -133,7 +136,7 @@ namespace InfoPC
         }
         private void GetDomainName()
         {
-            PcName = Environment.UserDomainName;
+           DomainName = Environment.UserDomainName;
         }
         private void GetIPv4Adress()
         {
@@ -184,9 +187,20 @@ namespace InfoPC
         {
             Application.Current.Shutdown();
         }
-        private void ChangeOpacity(object arg)
+        private void ChangeOpacityExecute(object arg)
         {
-            Environment.Exit(0);
+            [DllImport("user32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            static extern bool GetCursorPos(out System.Drawing.Point lpPoint);
+            System.Drawing.Point point;
+            GetCursorPos(out point);
+            var window = new Window();
+            System.Windows.Point screenCoordinates = Application.Current.MainWindow.PointToScreen(new System.Windows.Point(0, 0));
+            //MessageBox.Show(point.X.ToString() + " "+ screenCoordinates.X.ToString());
+            if (point.X >= 1500)
+            {
+                Application.Current.MainWindow.Opacity = 0;
+            };
         }
         private void copyToClipboard(string copyText)
         {
@@ -198,7 +212,7 @@ namespace InfoPC
         }
         private void GetVersionNumber()
         {
-            ProductVersion = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\FalconGaze\SecureTower\ProductVersion", "Installed", null);
+            ProductVersion = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\FalconGaze\SecureTower", "ProductVersion", null);
         }
         /* private void GetAdapterName()
          {
@@ -217,6 +231,7 @@ namespace InfoPC
             GetIPv4Adress();
             GetIPv6Adress();
             GetVersionNumber();
+           
         }
         
     }

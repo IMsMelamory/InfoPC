@@ -9,15 +9,15 @@
         xmlns:custom="clr-namespace:InfoPC.Behaviors" 
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:PCViewModel}"
+        Top="0"
         Topmost ="True"
         AllowsTransparency="True" 
+        Background="#01000000"
         WindowStyle="None"
         ShowInTaskbar="False"
         Title="InfoPC" 
         Height="210" Width="330">
-    <ineractivity:Interaction.Behaviors>
-        <custom:MouseEnterBehaviors/>
-    </ineractivity:Interaction.Behaviors>
+    
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -25,21 +25,12 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Window.Background>
-        <SolidColorBrush Opacity="0.2" Color="Gray"/>
-    </Window.Background>
-    <Window.Style>
-        <Style  TargetType="{x:Type Window}">
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="0.01"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Style>
     <Grid>
+        <ineractivity:Interaction.Behaviors>
+            <custom:MouseEnterBehaviors/>
+        </ineractivity:Interaction.Behaviors>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions >
