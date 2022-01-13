@@ -193,15 +193,11 @@ namespace InfoPC
         }
         private void DisableEthenetExecute(object arg)
         {
-            var s = arg.ToString();
-           
             SelectQuery wmiQuery = new SelectQuery("SELECT * FROM Win32_NetworkAdapter WHERE NetConnectionId != NULL");
             ManagementObjectSearcher searchProcedure = new ManagementObjectSearcher(wmiQuery);
-            var k = searchProcedure.Get();
-            var x = 0;
             foreach (ManagementObject item in searchProcedure.Get())
             {
-                //MessageBox.Show(item["NetConnectionId"].ToString());
+
                 if (item["NetConnectionId"].ToString() == arg.ToString())
                 {
                     item.InvokeMethod("Disable", null);
@@ -222,12 +218,15 @@ namespace InfoPC
         }
          private void GetAdapterName()
          {
-             NetworkInterface[] networks = NetworkInterface.GetAllNetworkInterfaces();
-             foreach (NetworkInterface adapter in networks)
-             {
-                 NameAdapter.Add(adapter.Name);
-             }
-         }
+            SelectQuery wmiQuery = new SelectQuery("SELECT * FROM Win32_NetworkAdapter WHERE NetConnectionId != NULL");
+            ManagementObjectSearcher searchProcedure = new ManagementObjectSearcher(wmiQuery);
+            foreach (ManagementObject item in searchProcedure.Get())
+            {
+
+                NameAdapter.Add(item["NetConnectionId"].ToString());
+
+            }
+        }
         private void UpdateInfo()
         {
             GetFreeSpace();

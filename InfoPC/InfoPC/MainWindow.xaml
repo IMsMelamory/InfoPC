@@ -130,24 +130,26 @@
         <tb:TaskbarIcon IconSource="pack://application:,,,/Images/icon.ico"
                         ToolTipText="Info PC" >
             <tb:TaskbarIcon.ContextMenu>
-                 <ContextMenu>
-                 <MenuItem Header="Копировать IPv4" Command="{Binding CopyIPv4Command}"/>
-                 <MenuItem Header="Копировать IPv6" Command="{Binding CopyIPv6Command}" />
-                 <MenuItem Header="Копировать Имя ПК" Command="{Binding CopyComputerNameCommand}" />
-                 <MenuItem Header="Копировать Имя юзера" Command="{Binding CopyUserNameCommand}" />
-                 <MenuItem Header="Копировать Имя домена" Command="{Binding CopyDomainNameCommand}" />
-                 <MenuItem Header="Копировать Номер версии" Command="{Binding CopyProductVersionCommand}" />
-                    <MenuItem Header="Выход" />
-                    <MenuItem Header="Names" ItemsSource="{Binding NameAdapter}">
+                <ContextMenu>
+                    <MenuItem Header="Копировать" >
+                        <MenuItem Header="IPv6" Command="{Binding CopyIPv6Command}" />
+                        <MenuItem Header="Имя ПК" Command="{Binding CopyComputerNameCommand}" />
+                        <MenuItem Header="Имя юзера" Command="{Binding CopyUserNameCommand}" />
+                        <MenuItem Header="Имя домена" Command="{Binding CopyDomainNameCommand}" />
+                        <MenuItem Header="Номер версии" Command="{Binding CopyProductVersionCommand}" />
+                        <MenuItem Header="IPv4" Command="{Binding CopyIPv4Command}"/>
+                    </MenuItem>
+                    <MenuItem   Header="Выход" Command="{Binding CloseWindowsCommand}" >
+                    </MenuItem>
+                    <MenuItem  Header="Адаптеры" ItemsSource="{Binding NameAdapter, Mode=OneWay}" >
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="MenuItem">
                                 <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=MenuItem}, Path=DataContext.DisableEthenetCommand}" />
                                 <Setter Property="CommandParameter" Value="{Binding}" />
+                                <Setter Property="IsCheckable" Value="True" />
                             </Style>
                         </MenuItem.ItemContainerStyle>
                     </MenuItem>
-
-
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
