@@ -123,23 +123,17 @@ namespace InfoPC
             UpdateInfo();
 
             _timer = new Timer(Callback, null, 1000 * 5, Timeout.Infinite);
-            CopyUserNameCommand = new RelayCommand(CopyUserNameExecute, CopyUserNameExecute => PcName != null);
-            CopyComputerNameCommand = new RelayCommand(CopyComputerNameExecute, CopyComputerNameExecute => PcName != null);
-            CopyDomainNameCommand = new RelayCommand(CopyDomainNameExecute, CopyDomainNameExecute => DomainName != null);
+            CopyToClipboardCommand = new RelayCommand(CopyToClipboardExecute);
             CopyIPv4Command = new RelayCommand(CopyIPv4Execute, CopyIPv4Execute => Ipv4Adress.Count != 0);
             CopyIPv6Command = new RelayCommand(CopyIPv6Execute, CopyIPv4Execute => Ipv6Adress.Count != 0);
-            CopyProductVersionCommand = new RelayCommand(CopyProductVersionExecute, CopyProductVersionExecute => ProductVersion != null);
             CloseWindowsCommand = new RelayCommand(CloseWindowExecute);
             ChangeStatusEthenetCommand = new RelayCommand(ChangeStatusEthenetExecute);
 
         }
 
-        public RelayCommand CopyUserNameCommand { get; set; }
-        public RelayCommand CopyComputerNameCommand { get; set; }
-        public RelayCommand CopyDomainNameCommand { get; set; }
+        public RelayCommand CopyToClipboardCommand { get; set; }
         public RelayCommand CopyIPv4Command { get; set; }
         public RelayCommand CopyIPv6Command { get; set; }
-        public RelayCommand CopyProductVersionCommand { get; set; }
         public RelayCommand CloseWindowsCommand { get; set; }
         public RelayCommand ChangeStatusEthenetCommand { get; set; }
         private void GetFreeSpace()
@@ -199,21 +193,9 @@ namespace InfoPC
         {
             CopyIPToClipboard(Ipv6Adress);
         }
-        private void CopyUserNameExecute(object arg)
+        private void CopyToClipboardExecute(object arg)
         {
-            copyToClipboard(UserName);
-        }
-        private void CopyComputerNameExecute(object arg)
-        {
-            copyToClipboard(PcName);
-        }
-        private void CopyDomainNameExecute(object arg)
-        {
-            copyToClipboard(DomainName);
-        }
-        private void CopyProductVersionExecute(object arg)
-        {
-            copyToClipboard(ProductVersion);
+            Clipboard.SetDataObject(arg.ToString());
         }
         private void CloseWindowExecute(object arg)
         {
@@ -235,13 +217,9 @@ namespace InfoPC
                 }
             }
         }
-        private void copyToClipboard(string copyText)
-        {
-            Clipboard.SetData(DataFormats.Text, copyText);
-        }
         private void CopyIPToClipboard(List<string> myList)
         {
-            copyToClipboard(string.Join(Environment.NewLine, myList.ToArray()));
+            //copyToClipboard(string.Join(Environment.NewLine, myList.ToArray()));
         }
         private void GetVersionNumber()
         {

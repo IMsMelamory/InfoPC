@@ -154,11 +154,12 @@
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Копировать" >
-                        <MenuItem Header="IPv6" Command="{Binding CopyIPv6Command}" />
-                        <MenuItem Header="Имя ПК" Command="{Binding CopyComputerNameCommand}" />
-                        <MenuItem Header="Имя юзера" Command="{Binding CopyUserNameCommand}" />
-                        <MenuItem Header="Имя домена" Command="{Binding CopyDomainNameCommand}" />
-                        <MenuItem Header="Номер версии" Command="{Binding CopyProductVersionCommand}" />
+                        <MenuItem Header="IPv6" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding }" />
+                        <MenuItem Header="Имя ПК" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding PcName}"/>
+                        <MenuItem Header="Имя юзера" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding UserName}" />
+                        <MenuItem Header="Имя домена" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding DomainName}" />
+                        <MenuItem Header="Номер версии" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding ProductVersion}"/>
+                        <MenuItem Header="Версия ОС" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding BuildVersionOS}"/>
                         <MenuItem Header="IPv4" Command="{Binding CopyIPv4Command}"/>
                     </MenuItem>
                     <MenuItem   Header="Выход" Command="{Binding CloseWindowsCommand}" >
