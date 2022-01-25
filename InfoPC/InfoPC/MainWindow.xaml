@@ -16,8 +16,8 @@
         WindowStyle="None"
         ShowInTaskbar="False"
         Title="InfoPC" 
-        Height="210" Width="330">
-    
+        SizeToContent="WidthAndHeight"
+        Height="Auto" Width="330">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -35,6 +35,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions >
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -78,9 +79,16 @@
         <TextBox Grid.Row="1" 
                  Grid.Column="0" 
                 Text="IPv6 Адрес" />
-        <TextBox Grid.Row="2" 
+        <ListView Grid.Row="2" 
                  Grid.Column="0" 
-                Text="Свободно(GB)" />
+                ItemsSource="{Binding FreeDiskSpace, Mode=OneWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock FontFamily="Arial"  
+                               Text="{Binding Path=DiskName, Mode=OneWay}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
         <TextBox Grid.Row="3" 
                  Grid.Column="0" 
                  Text="Имя ПК" />
@@ -93,31 +101,45 @@
         <TextBox Grid.Row="6" 
                  Grid.Column="0" 
                  Text="Версия SecureTower" />
+        <TextBox Grid.Row="7" 
+                 Grid.Column="0" 
+                 Text="Версия ОС" />
         <ListView Grid.Row="0" 
                   Grid.Column="1" 
                   ItemsSource="{Binding Ipv4Adress}">
             <ListView.ItemTemplate>
-               <DataTemplate>
-                  <TextBox Text="{Binding Mode=OneWay}"/>
-               </DataTemplate>
+                <DataTemplate>
+                    <TextBox Text="{Binding Mode=OneWay}"/>
+                </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
         <ListView Grid.Row="1" 
                   Grid.Column="1" 
                   ItemsSource="{Binding Ipv6Adress}" >
             <ListView.ItemTemplate>
-               <DataTemplate>
-                  <TextBox Text="{Binding Mode=OneWay}"/>
-               </DataTemplate>
+                <DataTemplate>
+                    <TextBox Text="{Binding Mode=OneWay}"/>
+                </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
         <TextBox Grid.Row="6" 
                   Grid.Column="1" 
                   Text="{Binding ProductVersion}">
         </TextBox>
-        <TextBox Grid.Row="2" 
+        <TextBox Grid.Row="7" 
+                  Grid.Column="1" 
+                  Text="{Binding BuildVersionOS}">
+        </TextBox>
+        <ListView Grid.Row="2" 
                  Grid.Column="1" 
-                 Text="{Binding FreeDiskSpace}"/>
+                ItemsSource="{Binding FreeDiskSpace}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock FontFamily="Arial"  
+                               Text="{Binding Path=FreeDiskSpace, Mode=OneWay}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
         <TextBox Grid.Row="3" 
                  Grid.Column="1" 
                  Text ="{Binding PcName}" />
@@ -141,18 +163,20 @@
                     </MenuItem>
                     <MenuItem   Header="Выход" Command="{Binding CloseWindowsCommand}" >
                     </MenuItem>
-                    <MenuItem  Header="Адаптеры" ItemsSource="{Binding NameAdapter, Mode=OneWay}" >
+                    <MenuItem  Header="Адаптеры" ItemsSource="{Binding NameAdapter, Mode=TwoWay}" >
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="MenuItem">
-                                <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=MenuItem}, Path=DataContext.DisableEthenetCommand}" />
-                                <Setter Property="CommandParameter" Value="{Binding}" />
+                                <Setter Property="Command" Value="{Binding DataContext.ChangeStatusEthenetCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}}}" />
+                                <Setter Property="CommandParameter" Value="{Binding NameAdapter}" />
                                 <Setter Property="IsCheckable" Value="True" />
+                                <Setter Property="Header" Value="{Binding NameAdapter, Mode=TwoWay}" />
+                                <Setter Property="IsChecked" Value="{Binding IsChecked, Mode=TwoWay}"/>
                             </Style>
                         </MenuItem.ItemContainerStyle>
                     </MenuItem>
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>
-        </Grid>
+    </Grid>
 
 </Window>

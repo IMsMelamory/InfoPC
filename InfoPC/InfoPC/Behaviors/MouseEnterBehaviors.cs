@@ -8,7 +8,7 @@ using System;
 
 namespace InfoPC.Behaviors
 {
-    public class MouseEnterBehaviors: Behavior<Grid>
+    public class MouseEnterBehaviors : Behavior<Grid>
     {
         protected override void OnAttached()
         {
@@ -27,10 +27,10 @@ namespace InfoPC.Behaviors
 
         private void OnMouseEnter(object sender, RoutedEventArgs e)
         {
-            
-                AssociatedObject.Opacity = 0;
 
-    }
+            AssociatedObject.Opacity = 0;
+
+        }
         private void OnMouseLeave(object sender, RoutedEventArgs e)
         {
             AssociatedObject.Opacity = 1;

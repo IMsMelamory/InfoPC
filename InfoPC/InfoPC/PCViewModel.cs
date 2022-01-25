@@ -18,14 +18,16 @@ namespace InfoPC
     {
         private List<string> _ipv4Adress;
         private List<string> _ipv6Adress;
-        private List<string> _nameAdapter = new List<string>();
-        private long _freeDiskSpace;
+        private List<CheckBoxAdapterItem> _nameAdapter = new List<CheckBoxAdapterItem>();
+        private List<FreeDiskSpaceViewModel> _freeDiskSpace = new List<FreeDiskSpaceViewModel>();
         private string _pcName;
         private string _userName;
         private string _domainName;
         private string _productVersion;
+        private string _buildVersionOS;
+        private bool _isChecked;
         private static Timer _timer;
-        public long FreeDiskSpace
+        public List<FreeDiskSpaceViewModel> FreeDiskSpace
         {
             get => _freeDiskSpace;
             set
@@ -70,12 +72,21 @@ namespace InfoPC
                 OnPropertyChanged();
             }
         }
+        public string BuildVersionOS
+        {
+            get => _buildVersionOS;
+            set
+            {
+                _buildVersionOS = value;
+                OnPropertyChanged();
+            }
+        }
         public List<string> Ipv4Adress
         {
             get => _ipv4Adress;
             set
             {
-                _ipv4Adress  = value;
+                _ipv4Adress = value;
                 OnPropertyChanged();
             }
         }
@@ -88,7 +99,7 @@ namespace InfoPC
                 OnPropertyChanged();
             }
         }
-        public List<string> NameAdapter
+        public List<CheckBoxAdapterItem> NameAdapter
         {
             get => _nameAdapter;
             set
@@ -97,23 +108,32 @@ namespace InfoPC
                 OnPropertyChanged();
             }
         }
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set
+            {
+                _isChecked = value;
+                OnPropertyChanged();
+            }
+        }
 
         public PCViewModel()
         {
             UpdateInfo();
-            
+
             _timer = new Timer(Callback, null, 1000 * 5, Timeout.Infinite);
             CopyUserNameCommand = new RelayCommand(CopyUserNameExecute, CopyUserNameExecute => PcName != null);
             CopyComputerNameCommand = new RelayCommand(CopyComputerNameExecute, CopyComputerNameExecute => PcName != null);
-            CopyDomainNameCommand = new RelayCommand(CopyDomainNameExecute, CopyDomainNameExecute => DomainName != null );
+            CopyDomainNameCommand = new RelayCommand(CopyDomainNameExecute, CopyDomainNameExecute => DomainName != null);
             CopyIPv4Command = new RelayCommand(CopyIPv4Execute, CopyIPv4Execute => Ipv4Adress.Count != 0);
             CopyIPv6Command = new RelayCommand(CopyIPv6Execute, CopyIPv4Execute => Ipv6Adress.Count != 0);
-            CopyProductVersionCommand = new RelayCommand(CopyProductVersionExecute, CopyProductVersionExecute  => ProductVersion != null );
+            CopyProductVersionCommand = new RelayCommand(CopyProductVersionExecute, CopyProductVersionExecute => ProductVersion != null);
             CloseWindowsCommand = new RelayCommand(CloseWindowExecute);
-            DisableEthenetCommand = new RelayCommand(DisableEthenetExecute);
-            
+            ChangeStatusEthenetCommand = new RelayCommand(ChangeStatusEthenetExecute);
+
         }
-        
+
         public RelayCommand CopyUserNameCommand { get; set; }
         public RelayCommand CopyComputerNameCommand { get; set; }
         public RelayCommand CopyDomainNameCommand { get; set; }
@@ -121,13 +141,21 @@ namespace InfoPC
         public RelayCommand CopyIPv6Command { get; set; }
         public RelayCommand CopyProductVersionCommand { get; set; }
         public RelayCommand CloseWindowsCommand { get; set; }
-        public RelayCommand DisableEthenetCommand{ get; set; }
+        public RelayCommand ChangeStatusEthenetCommand { get; set; }
         private void GetFreeSpace()
         {
-            DriveInfo[] allDrives = DriveInfo.GetDrives();
-            if (allDrives[0].IsReady == true)
+            var allDrives = DriveInfo.GetDrives();
+            foreach (var drive in allDrives)
             {
-                FreeDiskSpace = allDrives[0].AvailableFreeSpace / 1024 / 1024 / 1024;
+                try
+                {
+                    FreeDiskSpace.Add(new FreeDiskSpaceViewModel(drive.Name, drive.AvailableFreeSpace / 1024 / 1024 / 1024));
+                }
+                catch (Exception ex)
+                {
+
+                }
+
             }
         }
         private void GetUserName()
@@ -140,7 +168,7 @@ namespace InfoPC
         }
         private void GetDomainName()
         {
-           DomainName = Environment.UserDomainName;
+            DomainName = Environment.UserDomainName;
         }
         private void GetIPv4Adress()
         {
@@ -191,22 +219,25 @@ namespace InfoPC
         {
             Application.Current.Shutdown();
         }
-        private void DisableEthenetExecute(object arg)
+        private void ChangeStatusEthenetExecute(object arg)
         {
-            SelectQuery wmiQuery = new SelectQuery("SELECT * FROM Win32_NetworkAdapter WHERE NetConnectionId != NULL");
-            ManagementObjectSearcher searchProcedure = new ManagementObjectSearcher(wmiQuery);
-            foreach (ManagementObject item in searchProcedure.Get())
+            foreach (ManagementObject item in GetAllAdapter().Get())
             {
-
-                if (item["NetConnectionId"].ToString() == arg.ToString())
+                if (item["NetConnectionId"].Equals(arg.ToString()) && (bool)item.Properties["NetEnabled"].Value)
                 {
+
                     item.InvokeMethod("Disable", null);
+
+                }
+                if (item["NetConnectionId"].Equals(arg.ToString()) && !(bool)item.Properties["NetEnabled"].Value)
+                {
+                    item.InvokeMethod("Enable", null);
                 }
             }
         }
         private void copyToClipboard(string copyText)
         {
-           Clipboard.SetData(DataFormats.Text, copyText);
+            Clipboard.SetData(DataFormats.Text, copyText);
         }
         private void CopyIPToClipboard(List<string> myList)
         {
@@ -216,16 +247,34 @@ namespace InfoPC
         {
             ProductVersion = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\FalconGaze\SecureTower", "ProductVersion", null);
         }
-         private void GetAdapterName()
-         {
-            SelectQuery wmiQuery = new SelectQuery("SELECT * FROM Win32_NetworkAdapter WHERE NetConnectionId != NULL");
-            ManagementObjectSearcher searchProcedure = new ManagementObjectSearcher(wmiQuery);
-            foreach (ManagementObject item in searchProcedure.Get())
+        private void GetBuildVersionOS()
+        {
+            var productName = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName", "").ToString();
+            var displayVersion = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DisplayVersion", "").ToString();
+            var currentBild = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild", "").ToString();
+            BuildVersionOS = productName + ": " + displayVersion + " (" + currentBild + ")";
+        }
+        private void GetAdapterName()
+        {
+            foreach (var item in GetAllAdapter().Get())
             {
+                if (((bool)item.Properties["NetEnabled"].Value) == true)
+                {
+                    IsChecked = true;
 
-                NameAdapter.Add(item["NetConnectionId"].ToString());
-
+                }
+                else
+                {
+                    IsChecked = false;
+                }
+                NameAdapter.Add(new CheckBoxAdapterItem(IsChecked, item["NetConnectionId"].ToString()));
             }
+        }
+        private ManagementObjectSearcher GetAllAdapter()
+        {
+            var wmiQuery = new SelectQuery("SELECT * FROM Win32_NetworkAdapter WHERE NetConnectionId != NULL");
+            var searchProcedure = new ManagementObjectSearcher(wmiQuery);
+            return searchProcedure;
         }
         private void UpdateInfo()
         {
@@ -237,9 +286,11 @@ namespace InfoPC
             GetIPv6Adress();
             GetAdapterName();
             GetVersionNumber();
-           
+            GetBuildVersionOS();
+
+
         }
-        
+
     }
 }
 
