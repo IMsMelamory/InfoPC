@@ -44,34 +44,22 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Border Grid.Row="0" 
-                BorderThickness="0 0 0 1"
-                Grid.ColumnSpan="2"
-                BorderBrush="White">
+                Grid.ColumnSpan="2">
         </Border>
         <Border Grid.Row="1" 
-                BorderThickness="0 0 0 1"
-                Grid.ColumnSpan="2"
-                BorderBrush="White">
+                Grid.ColumnSpan="2">
         </Border>
         <Border Grid.Row="2" 
-                BorderThickness="0 0 0 1"
-                Grid.ColumnSpan="2"
-                BorderBrush="White">
+                Grid.ColumnSpan="2">
         </Border>
         <Border Grid.Row="3" 
-                BorderThickness="0 0 0 1"
-                Grid.ColumnSpan="2"
-                BorderBrush="White">
+                Grid.ColumnSpan="2">
         </Border>
         <Border Grid.Row="4" 
-                BorderThickness="0 0 0 1"
-                Grid.ColumnSpan="2"
-                BorderBrush="White">
+                Grid.ColumnSpan="2">
         </Border>
         <Border Grid.Row="5" 
-                BorderThickness="0 0 0 1"
-                Grid.ColumnSpan="2"
-                BorderBrush="White">
+                Grid.ColumnSpan="2">
         </Border>
         <TextBox Grid.Row="0" 
                  Grid.Column="0"

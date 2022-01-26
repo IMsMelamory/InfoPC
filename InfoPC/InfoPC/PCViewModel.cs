@@ -154,21 +154,19 @@ namespace InfoPC
         }
         private void GetIPv4Adress()
         {
-            Ipv4Adress = (from ip in Dns.GetHostEntry(Dns.GetHostName()).AddressList
-                          where ip.AddressFamily == AddressFamily.InterNetwork
-                          select ip.
-                          ToString()).
-                          ToList();
+            Ipv4Adress = Dns.GetHostEntry(Dns.GetHostName()).AddressList.
+                        Where(x => x.AddressFamily == AddressFamily.InterNetwork).
+                        Select(x => x.ToString()).
+                        ToList();
         }
         private void GetIPv6Adress()
         {
-            Ipv6Adress = (from ip in Dns.GetHostEntry(Dns.GetHostName()).AddressList
-                          where ip.AddressFamily == AddressFamily.InterNetworkV6
-                          select ip.
-                          ToString()).
-                          ToList();
+            Ipv6Adress = Dns.GetHostEntry(Dns.GetHostName()).AddressList.
+                         Where(x => x.AddressFamily == AddressFamily.InterNetworkV6).
+                         Select(x => x.ToString()).
+                         ToList();
         }
-        private void Callback(Object state)
+        private void Callback(object state)
         {
             UpdateInfo();
             _timer.Change(1000 * 10, Timeout.Infinite);
@@ -183,7 +181,14 @@ namespace InfoPC
         }
         private void CopyToClipboardExecute(object arg)
         {
-            Clipboard.SetDataObject(arg.ToString());
+            try
+            {
+                Clipboard.SetDataObject(arg.ToString());
+            }
+            catch
+            { 
+            
+            }
         }
         private void CloseWindowExecute(object arg)
         {
@@ -211,7 +216,14 @@ namespace InfoPC
         }
         private void GetVersionNumber()
         {
-            ProductVersion = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\FalconGaze\SecureTower", "ProductVersion", null);
+            try
+            {
+                ProductVersion = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\FalconGaze\SecureTower", "ProductVersion", null).ToString();
+            }
+            catch 
+            { 
+            
+            }
         }
         private void GetBuildVersionOS()
         {

@@ -17,4 +17,8 @@
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Margin" Value="0,0,0,5"/>
     </Style>
+    <Style TargetType="{x:Type Border}">
+        <Setter Property="BorderThickness" Value="0 0 0 1" />
+        <Setter Property="BorderBrush" Value="White" />
+    </Style>
 </ResourceDictionary>
