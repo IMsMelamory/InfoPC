@@ -5,12 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
-using System.Windows.Input;
 
 namespace InfoPC
 {
@@ -121,7 +118,6 @@ namespace InfoPC
         public PCViewModel()
         {
             UpdateInfo();
-
             _timer = new Timer(Callback, null, 1000 * 5, Timeout.Infinite);
             CopyToClipboardCommand = new RelayCommand(CopyToClipboardExecute);
             CopyIPv4Command = new RelayCommand(CopyIPv4Execute, CopyIPv4Execute => Ipv4Adress.Count != 0);
@@ -141,15 +137,7 @@ namespace InfoPC
             var allDrives = DriveInfo.GetDrives();
             foreach (var drive in allDrives)
             {
-                try
-                {
-                    FreeDiskSpace.Add(new FreeDiskSpaceViewModel(drive.Name, drive.AvailableFreeSpace / 1024 / 1024 / 1024));
-                }
-                catch (Exception ex)
-                {
-
-                }
-
+                FreeDiskSpace.Add(new FreeDiskSpaceViewModel(drive.Name, drive.AvailableFreeSpace / 1024 / 1024 / 1024));
             }
         }
         private void GetUserName()
@@ -219,7 +207,7 @@ namespace InfoPC
         }
         private void CopyIPToClipboard(List<string> myList)
         {
-            //copyToClipboard(string.Join(Environment.NewLine, myList.ToArray()));
+            Clipboard.SetDataObject(string.Join(Environment.NewLine, myList.ToArray()));
         }
         private void GetVersionNumber()
         {
@@ -236,10 +224,9 @@ namespace InfoPC
         {
             foreach (var item in GetAllAdapter().Get())
             {
-                if (((bool)item.Properties["NetEnabled"].Value) == true)
+                if ((bool)item.Properties["NetEnabled"].Value)
                 {
                     IsChecked = true;
-
                 }
                 else
                 {
@@ -250,9 +237,7 @@ namespace InfoPC
         }
         private ManagementObjectSearcher GetAllAdapter()
         {
-            var wmiQuery = new SelectQuery("SELECT * FROM Win32_NetworkAdapter WHERE NetConnectionId != NULL");
-            var searchProcedure = new ManagementObjectSearcher(wmiQuery);
-            return searchProcedure;
+            return new ManagementObjectSearcher(new SelectQuery("SELECT * FROM Win32_NetworkAdapter WHERE NetConnectionId != NULL"));
         }
         private void UpdateInfo()
         {
@@ -265,8 +250,6 @@ namespace InfoPC
             GetAdapterName();
             GetVersionNumber();
             GetBuildVersionOS();
-
-
         }
 
     }
