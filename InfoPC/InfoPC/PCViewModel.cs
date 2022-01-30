@@ -8,15 +8,16 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Windows;
+using System.Collections.ObjectModel;
 
 namespace InfoPC
 {
     public class PCViewModel : BaseViewModel
     {
-        private List<string> _ipv4Adress;
-        private List<string> _ipv6Adress;
-        private List<CheckBoxAdapterItem> _nameAdapter = new List<CheckBoxAdapterItem>();
-        private List<FreeDiskSpaceViewModel> _freeDiskSpace = new List<FreeDiskSpaceViewModel>();
+        private ObservableCollection<string> _ipv4Adress;
+        private ObservableCollection<string> _ipv6Adress;
+        private ObservableCollection<CheckBoxAdapterItem> _nameAdapter = new ObservableCollection<CheckBoxAdapterItem>();
+        private ObservableCollection<FreeDiskSpaceViewModel> _freeDiskSpace = new ObservableCollection<FreeDiskSpaceViewModel>();
         private string _pcName;
         private string _userName;
         private string _domainName;
@@ -24,7 +25,8 @@ namespace InfoPC
         private string _buildVersionOS;
         private bool _isChecked;
         private static Timer _timer;
-        public List<FreeDiskSpaceViewModel> FreeDiskSpace
+        public bool IsProduct { get; set; } = true;
+        public ObservableCollection<FreeDiskSpaceViewModel> FreeDiskSpace
         {
             get => _freeDiskSpace;
             set
@@ -78,7 +80,7 @@ namespace InfoPC
                 OnPropertyChanged();
             }
         }
-        public List<string> Ipv4Adress
+        public ObservableCollection<string> Ipv4Adress
         {
             get => _ipv4Adress;
             set
@@ -87,7 +89,7 @@ namespace InfoPC
                 OnPropertyChanged();
             }
         }
-        public List<string> Ipv6Adress
+        public ObservableCollection<string> Ipv6Adress
         {
             get => _ipv6Adress;
             set
@@ -96,7 +98,7 @@ namespace InfoPC
                 OnPropertyChanged();
             }
         }
-        public List<CheckBoxAdapterItem> NameAdapter
+        public ObservableCollection<CheckBoxAdapterItem> NameAdapter
         {
             get => _nameAdapter;
             set
@@ -120,25 +122,25 @@ namespace InfoPC
             UpdateInfo();
             _timer = new Timer(Callback, null, 1000 * 5, Timeout.Infinite);
             CopyToClipboardCommand = new RelayCommand(CopyToClipboardExecute);
-            CopyIPv4Command = new RelayCommand(CopyIPv4Execute, CopyIPv4Execute => Ipv4Adress.Count != 0);
-            CopyIPv6Command = new RelayCommand(CopyIPv6Execute, CopyIPv4Execute => Ipv6Adress.Count != 0);
             CloseWindowsCommand = new RelayCommand(CloseWindowExecute);
             ChangeStatusEthenetCommand = new RelayCommand(ChangeStatusEthenetExecute);
 
         }
 
         public RelayCommand CopyToClipboardCommand { get; set; }
-        public RelayCommand CopyIPv4Command { get; set; }
-        public RelayCommand CopyIPv6Command { get; set; }
         public RelayCommand CloseWindowsCommand { get; set; }
         public RelayCommand ChangeStatusEthenetCommand { get; set; }
         private void GetFreeSpace()
         {
             var allDrives = DriveInfo.GetDrives();
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+            FreeDiskSpace.Clear();
             foreach (var drive in allDrives)
             {
-                FreeDiskSpace.Add(new FreeDiskSpaceViewModel(drive.Name, drive.AvailableFreeSpace / 1024 / 1024 / 1024));
+                    FreeDiskSpace.Add(new FreeDiskSpaceViewModel(drive.Name, drive.AvailableFreeSpace / (1024 * 3))); 
             }
+            });
         }
         private void GetUserName()
         {
@@ -154,40 +156,32 @@ namespace InfoPC
         }
         private void GetIPv4Adress()
         {
-            Ipv4Adress = Dns.GetHostEntry(Dns.GetHostName()).AddressList.
-                        Where(x => x.AddressFamily == AddressFamily.InterNetwork).
-                        Select(x => x.ToString()).
-                        ToList();
+            Ipv4Adress = new ObservableCollection<string> (Dns.GetHostEntry(Dns.GetHostName()).AddressList.
+                         Where(x => x.AddressFamily == AddressFamily.InterNetwork).
+                         Select(x => x.ToString()).
+                         ToList());
         }
         private void GetIPv6Adress()
         {
-            Ipv6Adress = Dns.GetHostEntry(Dns.GetHostName()).AddressList.
+            Ipv6Adress = new ObservableCollection<string>(Dns.GetHostEntry(Dns.GetHostName()).AddressList.
                          Where(x => x.AddressFamily == AddressFamily.InterNetworkV6).
                          Select(x => x.ToString()).
-                         ToList();
+                         ToList());
         }
         private void Callback(object state)
         {
             UpdateInfo();
             _timer.Change(1000 * 10, Timeout.Infinite);
         }
-        private void CopyIPv4Execute(object arg)
-        {
-            CopyIPToClipboard(Ipv4Adress);
-        }
-        private void CopyIPv6Execute(object arg)
-        {
-            CopyIPToClipboard(Ipv6Adress);
-        }
         private void CopyToClipboardExecute(object arg)
         {
-            try
+            if (arg is ObservableCollection<string> stringArg)
+            {
+                Clipboard.SetDataObject(string.Join(Environment.NewLine, stringArg.ToArray()));
+            }
+            else
             {
                 Clipboard.SetDataObject(arg.ToString());
-            }
-            catch
-            { 
-            
             }
         }
         private void CloseWindowExecute(object arg)
@@ -210,42 +204,32 @@ namespace InfoPC
                 }
             }
         }
-        private void CopyIPToClipboard(List<string> myList)
-        {
-            Clipboard.SetDataObject(string.Join(Environment.NewLine, myList.ToArray()));
-        }
         private void GetVersionNumber()
         {
-            try
+            ProductVersion = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\FalconGaze\SecureTower", "ProductVersion", "")?.ToString();
+            if (ProductVersion == null)
             {
-                ProductVersion = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\FalconGaze\SecureTower", "ProductVersion", null).ToString();
-            }
-            catch 
-            { 
-            
+                IsProduct = false;
             }
         }
         private void GetBuildVersionOS()
         {
-            var productName = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName", "").ToString();
-            var displayVersion = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DisplayVersion", "").ToString();
-            var currentBild = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild", "").ToString();
-            BuildVersionOS = productName + ": " + displayVersion + " (" + currentBild + ")";
+            var productName = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName", "")?.ToString();
+            var displayVersion = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DisplayVersion", "")?.ToString();
+            var currentBild = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild", "")?.ToString();
+            BuildVersionOS = $"{productName}: {displayVersion} ({currentBild })";
         }
         private void GetAdapterName()
         {
-            foreach (var item in GetAllAdapter().Get())
+            Application.Current.Dispatcher.Invoke((Action)delegate
             {
-                if ((bool)item.Properties["NetEnabled"].Value)
+                NameAdapter.Clear();
+                foreach (var item in GetAllAdapter().Get())
                 {
-                    IsChecked = true;
-                }
-                else
-                {
-                    IsChecked = false;
-                }
+                IsChecked = (bool)item.Properties["NetEnabled"].Value;
                 NameAdapter.Add(new CheckBoxAdapterItem(IsChecked, item["NetConnectionId"].ToString()));
-            }
+                }
+            });
         }
         private ManagementObjectSearcher GetAllAdapter()
         {

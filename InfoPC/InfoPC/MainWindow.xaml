@@ -142,8 +142,8 @@
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Копировать" >
-                        <MenuItem Header="IPv6" Command="{Binding CopyIPv6Command}" />
-                        <MenuItem Header="IPv4" Command="{Binding CopyIPv4Command}"/>
+                        <MenuItem Header="IPv6" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding Ipv6Adress}" />
+                        <MenuItem Header="IPv4" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding Ipv4Adress}"/>
                         <MenuItem Header="Имя ПК" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding PcName}"/>
                         <MenuItem Header="Имя юзера" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding UserName}" />
                         <MenuItem Header="Имя домена" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding DomainName}" />
