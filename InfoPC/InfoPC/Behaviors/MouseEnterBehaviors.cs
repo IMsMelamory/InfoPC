@@ -1,39 +1,52 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
+using InfoPC.Helpers;
 using Microsoft.Xaml.Behaviors;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System;
 
 namespace InfoPC.Behaviors
 {
     public class MouseEnterBehaviors : Behavior<Grid>
     {
+        private Point _mousePositionOnMainWindow;
         protected override void OnAttached()
         {
             Application.Current.MainWindow.MouseEnter += OnMouseEnter;
-            Application.Current.MainWindow.MouseLeave += OnMouseLeave;
-
-            base.OnAttached();
         }
         protected override void OnDetaching()
         {
 
             Application.Current.MainWindow.MouseEnter -= OnMouseEnter;
-            Application.Current.MainWindow.MouseLeave -= OnMouseLeave;
-            base.OnDetaching();
         }
 
         private void OnMouseEnter(object sender, RoutedEventArgs e)
         {
-
-            AssociatedObject.Opacity = 0;
+            _mousePositionOnMainWindow = Application.Current.MainWindow.PointFromScreen(new Point(0, 0));
+            Application.Current.MainWindow.Visibility = Visibility.Collapsed;
+            Task.Run(async () => await ShowWindow());
+           
 
         }
-        private void OnMouseLeave(object sender, RoutedEventArgs e)
+        private async Task ShowWindow()
         {
-            AssociatedObject.Opacity = 1;
+            while (true)
+            {
+                await Task.Delay(1000);
+                var _mousePositionOnScreen = MouseWindowsHelper.GetMousePosition();
+                if (!(_mousePositionOnScreen.X + _mousePositionOnMainWindow.X > 0))
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        if (Application.Current.MainWindow != null)
+                        {
+                            Application.Current.MainWindow.Visibility = Visibility.Visible;
+                        }
+                    });
+                    break;
+                }
+            }
+            
+            
         }
 
     }
