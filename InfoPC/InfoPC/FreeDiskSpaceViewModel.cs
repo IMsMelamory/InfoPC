@@ -1,14 +1,14 @@
-﻿
+﻿using System;
 namespace InfoPC
 {
     public class FreeDiskSpaceViewModel
     {
-        public long FreeDiskSpace { get; set; }
+        public double FreeDiskSpace { get; set; }
         public string DiskName { get; set; }
-        public FreeDiskSpaceViewModel(string diskName, long freeDiskSpace)
+        public FreeDiskSpaceViewModel(string diskName, double freeDiskSpace)
         {
             DiskName = diskName;
-            FreeDiskSpace = freeDiskSpace;
+            FreeDiskSpace = Math.Round(freeDiskSpace, 1);
         }
     }
 }

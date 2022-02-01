@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -138,7 +137,11 @@ namespace InfoPC
             FreeDiskSpace.Clear();
             foreach (var drive in allDrives)
             {
-                    FreeDiskSpace.Add(new FreeDiskSpaceViewModel(drive.Name, drive.AvailableFreeSpace / (1024 * 3))); 
+                    if (drive.IsReady)
+                    {
+                        FreeDiskSpace.Add(new FreeDiskSpaceViewModel(drive.Name, drive.AvailableFreeSpace / Math.Pow(1024, 3)));
+                    }
+                     
             }
             });
         }

@@ -61,6 +61,9 @@
         <Border Grid.Row="5" 
                 Grid.ColumnSpan="2">
         </Border>
+        <Border Grid.Row="6" 
+                Grid.ColumnSpan="2">
+        </Border>
         <TextBox Grid.Row="0" 
                  Grid.Column="0"
                  Text="IPv4 Адрес" />
@@ -86,10 +89,10 @@
         <TextBox Grid.Row="5" 
                  Grid.Column="0" 
                  Text="Имя пользователя" />
-        <TextBox Grid.Row="6" 
+        <TextBox Grid.Row="7" 
                  Grid.Column="0" 
                  Text="Версия SecureTower" />
-        <TextBox Grid.Row="7" 
+        <TextBox Grid.Row="6" 
                  Grid.Column="0" 
                  Text="Версия ОС" />
         <ListView Grid.Row="0" 
@@ -110,11 +113,11 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <TextBox Grid.Row="6" 
+        <TextBox Grid.Row="7" 
                   Grid.Column="1" 
                   Text="{Binding ProductVersion}">
         </TextBox>
-        <TextBox Grid.Row="7" 
+        <TextBox Grid.Row="6" 
                   Grid.Column="1" 
                   Text="{Binding BuildVersionOS}">
         </TextBox>
