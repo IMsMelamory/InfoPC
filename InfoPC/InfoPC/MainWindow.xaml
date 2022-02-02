@@ -153,8 +153,8 @@
                         <MenuItem Header="Номер версии" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding ProductVersion}"/>
                         <MenuItem Header="Версия ОС" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding BuildVersionOS}"/>
                     </MenuItem>
-                    <MenuItem   Header="Выход" Command="{Binding CloseWindowsCommand}" >
-                    </MenuItem>
+                    <MenuItem   Header="Выход" Command="{Binding CloseWindowsCommand}" />
+                    <MenuItem   Header="Собрать логи" Command="{Binding CopyLogsCommand}" />
                     <MenuItem  Header="Адаптеры" ItemsSource="{Binding NameAdapter, Mode=TwoWay}" >
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="MenuItem">

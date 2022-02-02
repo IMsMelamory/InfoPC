@@ -8,11 +8,17 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Windows;
 using System.Collections.ObjectModel;
+using System.IO.Compression;
 
 namespace InfoPC
 {
     public class PCViewModel : BaseViewModel
     {
+
+        private readonly string _serverLogsFiles = @"C:\ProgramData\Falcongaze SecureTower\Logs";
+        private readonly string _consoleLogsFiles = @"C:\Users\{Environment.UserName}\AppData\Roaming\Falcongaze SecureTower";
+        private readonly string _agentHostLogsFiles = @"C:\ProgramData\Falcongaze SecureTower\EPA";
+        private readonly string _agentCssLogsFiles = @"C:\Users\{Environment.UserName}\AppData\Local\Falcongaze SecureTower";
         private ObservableCollection<string> _ipv4Adress;
         private ObservableCollection<string> _ipv6Adress;
         private ObservableCollection<CheckBoxAdapterItem> _nameAdapter = new ObservableCollection<CheckBoxAdapterItem>();
@@ -123,12 +129,14 @@ namespace InfoPC
             CopyToClipboardCommand = new RelayCommand(CopyToClipboardExecute);
             CloseWindowsCommand = new RelayCommand(CloseWindowExecute);
             ChangeStatusEthenetCommand = new RelayCommand(ChangeStatusEthenetExecute);
+            CopyLogsCommand = new RelayCommand(CopyLogsExecute);
 
         }
 
         public RelayCommand CopyToClipboardCommand { get; set; }
         public RelayCommand CloseWindowsCommand { get; set; }
         public RelayCommand ChangeStatusEthenetCommand { get; set; }
+        public RelayCommand CopyLogsCommand { get; set; }
         private void GetFreeSpace()
         {
             var allDrives = DriveInfo.GetDrives();
@@ -190,6 +198,54 @@ namespace InfoPC
         private void CloseWindowExecute(object arg)
         {
             Application.Current.Shutdown();
+        }
+        private void CopyLogsExecute(object arg)
+        {
+            Directory.CreateDirectory(@"C:\Logs");
+            string[] serverLogsFiles = Directory.GetFiles(_serverLogsFiles, "*.log", SearchOption.AllDirectories);
+            if (serverLogsFiles.Length > 0)
+            {
+                foreach (var filename in serverLogsFiles)
+                {
+                    var fileName = Path.GetFileName(filename);
+                    var destFile = Path.Combine(@"C:\Logs", fileName);
+                    File.Copy(filename, destFile, true);
+                }
+            }
+            string[] consoleLogsFiles = Directory.GetFiles(_consoleLogsFiles, "*.log");
+            if (serverLogsFiles.Length > 0)
+            {
+                foreach (var filename in consoleLogsFiles)
+                {
+                    var fileName = Path.GetFileName(filename);
+                    var destFile = Path.Combine(@"C:\Logs", fileName);
+                    File.Copy(filename, destFile, true);
+                }
+            }
+            Directory.CreateDirectory(@"C:\AgentLogs");
+            string[] agentHostLogsFiles = Directory.GetFiles(_agentHostLogsFiles, "*.log");
+            if (agentHostLogsFiles.Length > 0)
+            {
+                foreach (var filename in agentHostLogsFiles)
+                {
+                    var fileName = Path.GetFileName(filename);
+                    var destFile = Path.Combine(@"C:\AgentLogs", fileName);
+                    File.Copy(filename, destFile, true);
+                }
+            }
+            string[] agentCssLogsFiles = Directory.GetFiles(_agentCssLogsFiles, "*.log");
+            if (agentCssLogsFiles.Length > 0)
+            {
+                foreach (var filename in agentCssLogsFiles)
+                {
+                    var fileName = Path.GetFileName(filename);
+                    var destFile = Path.Combine(@"C:\AgentLogs", fileName);
+                    File.Copy(filename, destFile, true);
+                }
+            }
+            string startPath = @"C:\Logs";
+            string zipPath = @"C:\result.zip";
+            ZipFile.CreateFromDirectory(startPath, zipPath);
         }
         private void ChangeStatusEthenetExecute(object arg)
         {
