@@ -33,7 +33,7 @@ namespace InfoPC.Behaviors
         {
             while (true)
             {
-                await Task.Delay(1000);
+                await Task.Delay(500);
                 var _mousePositionOnScreen = MouseWindowsHelper.GetMousePosition();
                 if (_mousePositionOnMainWindowY.Y > _mousePositionOnScreen.Y  || !(_mousePositionOnMainWindowX.X + _mousePositionOnScreen.X > 0))
                 {

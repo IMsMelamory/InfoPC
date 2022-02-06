@@ -10,16 +10,21 @@ using System.Windows;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
 using System.Windows.Input;
+using System.Threading.Tasks;
 
 namespace InfoPC
 {
     public class PCViewModel : BaseViewModel
     {
 
-        private readonly string _serverLogsFiles = @"C:\ProgramData\Falcongaze SecureTower\Logs";
+        private readonly string _serverLogsFilesPath = @"C:\ProgramData\Falcongaze SecureTower\Logs";
         private readonly string _consoleLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\Falcongaze SecureTower";
         private readonly string _agentHostLogsFiles = @"C:\ProgramData\Falcongaze SecureTower\EPA";
         private readonly string _agentCssLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Falcongaze SecureTower";
+        private readonly string _tempLogsFilesPath = @"C:\ProgramData\Logs\ServerLogs";
+        private readonly string _tempAgentLogsFilesPath = @"C:\ProgramData\Logs\AgentLogs";
+        private readonly string _zipArchiveResultFiles = @"C:\Logs.zip";
+        private string[] _serverLogsFiles;
         private ObservableCollection<string> _ipv4Adress;
         private ObservableCollection<string> _ipv6Adress;
         private ObservableCollection<CheckBoxAdapterItem> _nameAdapter = new ObservableCollection<CheckBoxAdapterItem>();
@@ -133,7 +138,6 @@ namespace InfoPC
             CopyLogsCommand = new RelayCommand(CopyLogsExecute);
 
         }
-
         public ICommand CopyToClipboardCommand { get; set; }
         public ICommand CloseWindowsCommand { get; set; }
         public ICommand ChangeStatusEthenetCommand { get; set; }
@@ -141,7 +145,7 @@ namespace InfoPC
         private void GetFreeSpace()
         {
             var allDrives = DriveInfo.GetDrives();
-            Application.Current.Dispatcher.Invoke(delegate
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 FreeDiskSpace.Clear();
                 foreach (var drive in allDrives)
@@ -202,52 +206,43 @@ namespace InfoPC
         }
         private void CopyLogsExecute(object arg)
         {
-            Directory.CreateDirectory(@"C:\Logs");
-            string[] serverLogsFiles = Directory.GetFiles(_serverLogsFiles, "*.log", SearchOption.AllDirectories);
-            if (serverLogsFiles.Length > 0)
+            _serverLogsFiles = Directory.GetFiles(_serverLogsFilesPath, "*.log", SearchOption.AllDirectories);
+            if (_serverLogsFiles.Length > 0)
             {
-                foreach (var filename in serverLogsFiles)
-                {
-                    var fileName = Path.GetFileName(filename);
-                    var destFile = Path.Combine(@"C:\Logs", fileName);
-                    File.Copy(filename, destFile, true);
-                }
+                Directory.CreateDirectory(_tempLogsFilesPath);
+                Task.Run(async () => await CopyFiles(_serverLogsFiles, _tempLogsFilesPath));
             }
             string[] consoleLogsFiles = Directory.GetFiles(_consoleLogsFiles, "*.log");
-            if (serverLogsFiles.Length > 0)
+            if (_serverLogsFiles.Length > 0)
             {
-                foreach (var filename in consoleLogsFiles)
-                {
-                    var fileName = Path.GetFileName(filename);
-                    var destFile = Path.Combine(@"C:\Logs", fileName);
-                    File.Copy(filename, destFile, true);
-                }
+                Directory.CreateDirectory(_tempLogsFilesPath);
+                Task.Run(async () => await CopyFiles(consoleLogsFiles, _tempLogsFilesPath));
             }
-            Directory.CreateDirectory(@"C:\AgentLogs");
+           
             string[] agentHostLogsFiles = Directory.GetFiles(_agentHostLogsFiles, "*.log");
             if (agentHostLogsFiles.Length > 0)
             {
-                foreach (var filename in agentHostLogsFiles)
-                {
-                    var fileName = Path.GetFileName(filename);
-                    var destFile = Path.Combine(@"C:\AgentLogs", fileName);
-                    File.Copy(filename, destFile, true);
-                }
+                Directory.CreateDirectory(_tempAgentLogsFilesPath);
+                Task.Run(async () => await CopyFiles(agentHostLogsFiles, _tempAgentLogsFilesPath));
             }
             string[] agentCssLogsFiles = Directory.GetFiles(_agentCssLogsFiles, "*.log");
             if (agentCssLogsFiles.Length > 0)
             {
-                foreach (var filename in agentCssLogsFiles)
-                {
-                    var fileName = Path.GetFileName(filename);
-                    var destFile = Path.Combine(@"C:\AgentLogs", fileName);
-                    File.Copy(filename, destFile, true);
-                }
+                Directory.CreateDirectory(_tempAgentLogsFilesPath);
+                Task.Run(async () => await CopyFiles(agentCssLogsFiles, _tempAgentLogsFilesPath));
             }
-            string startPath = @"C:\Logs";
-            string zipPath = @"C:\result.zip";
-            ZipFile.CreateFromDirectory(startPath, zipPath);
+            var path = @"C:\ProgramData\Logs";
+            ZipFile.CreateFromDirectory(path, _zipArchiveResultFiles);
         }
+        private async Task CopyFiles(string[] files, string path)
+        {
+            await Task.Delay(500);
+            foreach (var filename in files)
+            {
+                File.Copy(filename, Path.Combine(path, Path.GetFileName(filename)), true);
+            }
+        }
+
         private void ChangeStatusEthenetExecute(object arg)
         {
             foreach (ManagementObject item in GetAllAdapter().Get())
@@ -281,7 +276,7 @@ namespace InfoPC
         }
         private void GetAdapterName()
         {
-            Application.Current.Dispatcher.Invoke(delegate
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 NameAdapter.Clear();
                 foreach (var item in GetAllAdapter().Get())
