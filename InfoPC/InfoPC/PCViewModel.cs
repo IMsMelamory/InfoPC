@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
+using System.Windows.Input;
 
 namespace InfoPC
 {
@@ -16,9 +17,9 @@ namespace InfoPC
     {
 
         private readonly string _serverLogsFiles = @"C:\ProgramData\Falcongaze SecureTower\Logs";
-        private readonly string _consoleLogsFiles = @"C:\Users\{Environment.UserName}\AppData\Roaming\Falcongaze SecureTower";
+        private readonly string _consoleLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\Falcongaze SecureTower";
         private readonly string _agentHostLogsFiles = @"C:\ProgramData\Falcongaze SecureTower\EPA";
-        private readonly string _agentCssLogsFiles = @"C:\Users\{Environment.UserName}\AppData\Local\Falcongaze SecureTower";
+        private readonly string _agentCssLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Falcongaze SecureTower";
         private ObservableCollection<string> _ipv4Adress;
         private ObservableCollection<string> _ipv6Adress;
         private ObservableCollection<CheckBoxAdapterItem> _nameAdapter = new ObservableCollection<CheckBoxAdapterItem>();
@@ -133,24 +134,24 @@ namespace InfoPC
 
         }
 
-        public RelayCommand CopyToClipboardCommand { get; set; }
-        public RelayCommand CloseWindowsCommand { get; set; }
-        public RelayCommand ChangeStatusEthenetCommand { get; set; }
-        public RelayCommand CopyLogsCommand { get; set; }
+        public ICommand CopyToClipboardCommand { get; set; }
+        public ICommand CloseWindowsCommand { get; set; }
+        public ICommand ChangeStatusEthenetCommand { get; set; }
+        public ICommand CopyLogsCommand { get; set; }
         private void GetFreeSpace()
         {
             var allDrives = DriveInfo.GetDrives();
-            Application.Current.Dispatcher.Invoke((Action)delegate
+            Application.Current.Dispatcher.Invoke(delegate
             {
-            FreeDiskSpace.Clear();
-            foreach (var drive in allDrives)
-            {
+                FreeDiskSpace.Clear();
+                foreach (var drive in allDrives)
+                {
                     if (drive.IsReady)
                     {
                         FreeDiskSpace.Add(new FreeDiskSpaceViewModel(drive.Name, drive.AvailableFreeSpace / Math.Pow(1024, 3)));
                     }
-                     
-            }
+
+                }
             });
         }
         private void GetUserName()
@@ -280,13 +281,13 @@ namespace InfoPC
         }
         private void GetAdapterName()
         {
-            Application.Current.Dispatcher.Invoke((Action)delegate
+            Application.Current.Dispatcher.Invoke(delegate
             {
                 NameAdapter.Clear();
                 foreach (var item in GetAllAdapter().Get())
                 {
-                IsChecked = (bool)item.Properties["NetEnabled"].Value;
-                NameAdapter.Add(new CheckBoxAdapterItem(IsChecked, item["NetConnectionId"].ToString()));
+                    IsChecked = (bool)item.Properties["NetEnabled"].Value;
+                    NameAdapter.Add(new CheckBoxAdapterItem(IsChecked, item["NetConnectionId"].ToString()));
                 }
             });
         }

@@ -8,7 +8,8 @@ namespace InfoPC.Behaviors
 {
     public class MouseEnterBehaviors : Behavior<Grid>
     {
-        private Point _mousePositionOnMainWindow;
+        private Point _mousePositionOnMainWindowX;
+        private Point _mousePositionOnMainWindowY;
         protected override void OnAttached()
         {
             Application.Current.MainWindow.MouseEnter += OnMouseEnter;
@@ -21,7 +22,8 @@ namespace InfoPC.Behaviors
 
         private void OnMouseEnter(object sender, RoutedEventArgs e)
         {
-            _mousePositionOnMainWindow = Application.Current.MainWindow.PointFromScreen(new Point(0, 0));
+            _mousePositionOnMainWindowX = Application.Current.MainWindow.PointFromScreen(new Point(0, 0));
+            _mousePositionOnMainWindowY = Application.Current.MainWindow.PointFromScreen(new Point(0, SystemParameters.WorkArea.Height));
             Application.Current.MainWindow.Visibility = Visibility.Collapsed;
             Task.Run(async () => await ShowWindow());
            
@@ -33,7 +35,7 @@ namespace InfoPC.Behaviors
             {
                 await Task.Delay(1000);
                 var _mousePositionOnScreen = MouseWindowsHelper.GetMousePosition();
-                if (!(_mousePositionOnScreen.X + _mousePositionOnMainWindow.X > 0))
+                if (_mousePositionOnMainWindowY.Y > _mousePositionOnScreen.Y  || !(_mousePositionOnMainWindowX.X + _mousePositionOnScreen.X > 0))
                 {
                     Dispatcher.Invoke(() =>
                     {
