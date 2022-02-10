@@ -26,8 +26,6 @@ namespace InfoPC.Behaviors
             _heightWindows = (int)Application.Current.MainWindow.Height;
             Application.Current.MainWindow.Visibility = Visibility.Collapsed;
             Task.Run(async () => await ShowWindow());
-           
-
         }
         private async Task ShowWindow()
         {
@@ -35,7 +33,6 @@ namespace InfoPC.Behaviors
             {
                 await Task.Delay(500);
                 var _mousePositionOnScreen = MouseWindowsHelper.GetMousePosition();
-                
                 if ( _heightWindows < _mousePositionOnScreen.Y  || !(_mousePositionOnMainWindowX.X + _mousePositionOnScreen.X > 0))
                 {
                     Dispatcher.Invoke(() =>

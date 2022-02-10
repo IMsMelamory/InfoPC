@@ -155,6 +155,7 @@
                     </MenuItem>
                     <MenuItem   Header="Выход" Command="{Binding CloseWindowsCommand}" />
                     <MenuItem   Header="Собрать логи" Command="{Binding CopyLogsCommand}" />
+                    <MenuItem   Header="Службы ST" Command="{Binding ShowWindowServicesCommand}" />
                     <MenuItem  Header="Адаптеры" ItemsSource="{Binding NameAdapter, Mode=TwoWay}" >
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="MenuItem">

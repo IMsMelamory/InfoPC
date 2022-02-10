@@ -140,13 +140,15 @@ namespace InfoPC
             CloseWindowsCommand = new RelayCommand(CloseWindowExecute);
             ChangeStatusEthenetCommand = new RelayCommand(ChangeStatusEthenetExecute);
             CopyLogsCommand = new RelayCommand(CopyLogsExecute);
-           
+            ShowWindowServicesCommand = new RelayCommand(ShowWindowServicesExecute);
+
 
         }
         public ICommand CopyToClipboardCommand { get; set; }
         public ICommand CloseWindowsCommand { get; set; }
         public ICommand ChangeStatusEthenetCommand { get; set; }
         public ICommand CopyLogsCommand { get; set; }
+        public ICommand ShowWindowServicesCommand { get; set; }
         private void GetFreeSpace()
         {
             var allDrives = DriveInfo.GetDrives();
@@ -208,6 +210,11 @@ namespace InfoPC
         private void CloseWindowExecute(object arg)
         {
             Application.Current.Shutdown();
+        }
+        private void ShowWindowServicesExecute(object arg)
+        {
+            Services WindowServices = new Services();
+            WindowServices.Show();
         }
         private void CopyLogsExecute(object arg)
         {
@@ -313,8 +320,6 @@ namespace InfoPC
             GetAdapterName();
             GetVersionNumber();
             GetBuildVersionOS();
-            /*var _mousePositionOnScreen = MouseWindowsHelper.GetMousePosition();
-            MessageBox.Show(_mousePositionOnScreen.ToString());*/
         }
 
     }

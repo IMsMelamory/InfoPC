@@ -1,0 +1,59 @@
+﻿<Window x:Class="InfoPC.Services"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InfoPC"
+        xmlns:serviceProcess="clr-namespace:System.ServiceProcess;assembly=System.ServiceProcess"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" d:DataContext="{d:DesignInstance d:Type={x:Type local:MainWindow} }">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <DataTemplate x:Key="ItemTemplate" DataType="local:ServiceControllerVM">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="{Binding ServiceController.ServiceName}">
+                        <Label.Style>
+                            <Style TargetType="Label">
+                                <Setter Property="Foreground" Value="Black" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsStopped}" Value="True">
+                                        <Setter Property="Foreground" Value="Red" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                    <Label Grid.Column="1">Status:</Label>
+                    <Label Grid.Column="2" Content="{Binding Status}" />
+                    <Button Grid.Column="3" Command="{Binding StartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=local:MainWindow}}" CommandParameter="{Binding }">Start</Button>
+                    <Button Grid.Column="4" Command="{Binding StopCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=local:MainWindow}}" CommandParameter="{Binding }">Stop</Button>
+                    <Button Grid.Column="5" Command="{Binding RestartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=local:MainWindow}}" CommandParameter="{Binding }">Restart</Button>
+                </Grid>
+            </DataTemplate>
+        </Grid.Resources>
+
+        <Grid Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <Button Click="StartAll">Start All</Button>
+                <Button Click="StopAll">Stop All</Button>
+                <Button Click="RestartAll">Restart All</Button>
+            </StackPanel>
+        </Grid>
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding ServiceControllers}"
+                      AlternationCount="2"
+                      ItemTemplate="{StaticResource ItemTemplate}"></ItemsControl>
+    </Grid>
+</Window>
