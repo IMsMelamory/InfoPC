@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.IO.Compression;
 using System.Windows.Input;
 using System.Threading.Tasks;
+using InfoPC.Helpers;
 
 namespace InfoPC
 {
@@ -22,8 +23,11 @@ namespace InfoPC
         private readonly string _agentHostLogsFiles = @"C:\ProgramData\Falcongaze SecureTower\EPA";
         private readonly string _agentCssLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Falcongaze SecureTower";
         private readonly string _tempLogsFilesPath = @"C:\ProgramData\Logs\ServerLogs";
+        private readonly string _tempConsoleLogsFilesPath = @"C:\ProgramData\Logs\ConsoleLogs";
         private readonly string _tempAgentLogsFilesPath = @"C:\ProgramData\Logs\AgentLogs";
-        private readonly string _zipArchiveResultFiles = @"C:\Logs.zip";
+        private readonly string _zipArchiveServerLogs = @"C:\ServerLogs.zip";
+        private readonly string _zipArchiveConsoleLogs = @"C:\ConsoleLogs.zip";
+        private readonly string _zipArchiveAgentsLogs = @"C:\AgentsLogs.zip";
         private string[] _serverLogsFiles;
         private ObservableCollection<string> _ipv4Adress;
         private ObservableCollection<string> _ipv6Adress;
@@ -136,6 +140,7 @@ namespace InfoPC
             CloseWindowsCommand = new RelayCommand(CloseWindowExecute);
             ChangeStatusEthenetCommand = new RelayCommand(ChangeStatusEthenetExecute);
             CopyLogsCommand = new RelayCommand(CopyLogsExecute);
+           
 
         }
         public ICommand CopyToClipboardCommand { get; set; }
@@ -211,12 +216,14 @@ namespace InfoPC
             {
                 Directory.CreateDirectory(_tempLogsFilesPath);
                 Task.Run(async () => await CopyFiles(_serverLogsFiles, _tempLogsFilesPath));
+                Task.Run(async () => await ArchiveFiles(_tempLogsFilesPath, _zipArchiveServerLogs));
             }
             string[] consoleLogsFiles = Directory.GetFiles(_consoleLogsFiles, "*.log");
             if (_serverLogsFiles.Length > 0)
             {
                 Directory.CreateDirectory(_tempLogsFilesPath);
-                Task.Run(async () => await CopyFiles(consoleLogsFiles, _tempLogsFilesPath));
+                Task.Run(async () => await CopyFiles(consoleLogsFiles, _tempConsoleLogsFilesPath));
+                Task.Run(async () => await ArchiveFiles(_tempConsoleLogsFilesPath, _zipArchiveConsoleLogs));
             }
            
             string[] agentHostLogsFiles = Directory.GetFiles(_agentHostLogsFiles, "*.log");
@@ -230,9 +237,9 @@ namespace InfoPC
             {
                 Directory.CreateDirectory(_tempAgentLogsFilesPath);
                 Task.Run(async () => await CopyFiles(agentCssLogsFiles, _tempAgentLogsFilesPath));
+                Task.Run(async () => await ArchiveFiles(_tempAgentLogsFilesPath, _zipArchiveAgentsLogs));
             }
-            var path = @"C:\ProgramData\Logs";
-            ZipFile.CreateFromDirectory(path, _zipArchiveResultFiles);
+            
         }
         private async Task CopyFiles(string[] files, string path)
         {
@@ -241,6 +248,11 @@ namespace InfoPC
             {
                 File.Copy(filename, Path.Combine(path, Path.GetFileName(filename)), true);
             }
+        }
+        private async Task ArchiveFiles(string pathFiles, string pathArchive)
+        {
+            await Task.Delay(500);
+            ZipFile.CreateFromDirectory(pathFiles, pathArchive);
         }
 
         private void ChangeStatusEthenetExecute(object arg)
@@ -301,6 +313,8 @@ namespace InfoPC
             GetAdapterName();
             GetVersionNumber();
             GetBuildVersionOS();
+            /*var _mousePositionOnScreen = MouseWindowsHelper.GetMousePosition();
+            MessageBox.Show(_mousePositionOnScreen.ToString());*/
         }
 
     }
