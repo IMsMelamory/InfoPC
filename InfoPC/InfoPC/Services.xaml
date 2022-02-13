@@ -7,7 +7,8 @@
         xmlns:serviceProcess="clr-namespace:System.ServiceProcess;assembly=System.ServiceProcess"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:ServiceControllerVM}"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Services Secure Tower" 
+        Height="450" Width="600">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -24,7 +25,6 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-
                     <Label Content="{Binding ServiceController.ServiceName}">
                         <Label.Style>
                             <Style TargetType="Label">
@@ -39,9 +39,9 @@
                     </Label>
                     <Label Grid.Column="1">Status:</Label>
                     <Label Grid.Column="2" Content="{Binding Status}" />
-                    <Button Grid.Column="3" Command="{Binding StartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=local:MainWindow}}" CommandParameter="{Binding }">Start</Button>
-                    <Button Grid.Column="4" Command="{Binding StopCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=local:MainWindow}}" CommandParameter="{Binding }">Stop</Button>
-                    <Button Grid.Column="5" Command="{Binding RestartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=local:MainWindow}}" CommandParameter="{Binding }">Restart</Button>
+                    <Button Grid.Column="3" Command="{Binding StartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" CommandParameter="{Binding }">Start</Button>
+                    <Button Grid.Column="4" Command="{Binding StopCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" CommandParameter="{Binding }">Stop</Button>
+                    <Button Grid.Column="5" Command="{Binding RestartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" CommandParameter="{Binding }">Restart</Button>
                 </Grid>
             </DataTemplate>
         </Grid.Resources>

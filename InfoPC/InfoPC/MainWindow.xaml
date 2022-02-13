@@ -41,7 +41,17 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" >
+                <RowDefinition.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsProduct}" Value="false">
+                                <Setter Property="RowDefinition.Height" Value="0" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </RowDefinition.Style>
+            </RowDefinition>
         </Grid.RowDefinitions>
         <Border Grid.Row="0" 
                 Grid.ColumnSpan="2">
@@ -91,7 +101,17 @@
                  Text="Имя пользователя" />
         <TextBox Grid.Row="7" 
                  Grid.Column="0" 
-                 Text="Версия SecureTower" />
+                 Text="Версия SecureTower" >
+            <TextBox.Style>
+                <Style>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsProduct}" Value="false">
+                            <Setter Property="TextBox.Opacity" Value="0" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
         <TextBox Grid.Row="6" 
                  Grid.Column="0" 
                  Text="Версия ОС" />
@@ -116,6 +136,7 @@
         <TextBox Grid.Row="7" 
                   Grid.Column="1" 
                   Text="{Binding ProductVersion}">
+           
         </TextBox>
         <TextBox Grid.Row="6" 
                   Grid.Column="1" 
@@ -153,9 +174,6 @@
                         <MenuItem Header="Номер версии" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding ProductVersion}"/>
                         <MenuItem Header="Версия ОС" Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding BuildVersionOS}"/>
                     </MenuItem>
-                    <MenuItem   Header="Выход" Command="{Binding CloseWindowsCommand}" />
-                    <MenuItem   Header="Собрать логи" Command="{Binding CopyLogsCommand}" />
-                    <MenuItem   Header="Службы ST" Command="{Binding ShowWindowServicesCommand}" />
                     <MenuItem  Header="Адаптеры" ItemsSource="{Binding NameAdapter, Mode=TwoWay}" >
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="MenuItem">
@@ -167,6 +185,13 @@
                             </Style>
                         </MenuItem.ItemContainerStyle>
                     </MenuItem>
+                    <MenuItem   Header="Собрать логи" Command="{Binding CopyLogsCommand}" >
+                        <MenuItem.ToolTip>
+                            <ToolTip Content="На С:\" />
+                        </MenuItem.ToolTip>
+                    </MenuItem>
+                    <MenuItem   Header="Службы ST" Command="{Binding ShowWindowServicesCommand}" />
+                    <MenuItem   Header="Выход" Command="{Binding CloseWindowsCommand}" />
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>

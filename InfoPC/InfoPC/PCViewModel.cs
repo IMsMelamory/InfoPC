@@ -40,7 +40,7 @@ namespace InfoPC
         private string _buildVersionOS;
         private bool _isChecked;
         private static Timer _timer;
-        public bool IsProduct { get; set; } = true;
+        public bool IsProduct { get; set; } = false;
         public ObservableCollection<FreeDiskSpaceViewModel> FreeDiskSpace
         {
             get => _freeDiskSpace;
@@ -277,9 +277,9 @@ namespace InfoPC
         private void GetVersionNumber()
         {
             ProductVersion = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\FalconGaze\SecureTower", "ProductVersion", "")?.ToString();
-            if (ProductVersion == null)
+            if (ProductVersion != null)
             {
-                IsProduct = false;
+                IsProduct = true;
             }
         }
         private void GetBuildVersionOS()
@@ -295,7 +295,12 @@ namespace InfoPC
             {
                 foreach (var item in GetAllAdapter().Get())
                 {
-                    if (NameAdapter.FirstOrDefault(x => x.NameAdapter == item["NetConnectionId"].ToString()) == null)
+                    if (NameAdapter.FirstOrDefault(x => x.NameAdapter == item["NetConnectionId"].ToString()) != null)
+                    {
+
+                        IsChecked = (bool)item.Properties["NetEnabled"].Value;
+                    }
+                    else
                     {
                         IsChecked = (bool)item.Properties["NetEnabled"].Value;
                         NameAdapter.Add(new CheckBoxAdapterItem(IsChecked, item["NetConnectionId"].ToString()));

@@ -1,15 +1,12 @@
 ﻿using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows;
 using System.Windows.Input;
 using Timer = System.Timers.Timer;
 
@@ -17,10 +14,13 @@ namespace InfoPC
 {
     public class ServiceControllerVM : BaseViewModel
     {
+        private const string SettingsFileName = "AdditionalServices.txt";
+
+        private readonly Timer _timer;
         public ServiceController ServiceController { get; set; }
         public ServiceControllerStatus Status => ServiceController.Status;
+        public List<ServiceControllerVM> ServiceControllers { get; set; } = new List<ServiceControllerVM>();
         public bool IsStopped => Status == ServiceControllerStatus.Stopped;
-        private readonly Timer _timer;
 
         public List<string> DefaultServices = new List<string>()
         {
@@ -38,10 +38,6 @@ namespace InfoPC
             "FgStStorageServer",
             "FgStReportsServerService"
         };
-
-        public List<ServiceControllerVM> ServiceControllers { get; set; } = new List<ServiceControllerVM>();
-
-        private const string SettingsFileName = "AdditionalServices.txt";
         public ServiceControllerVM()
         {
             var services = ServiceController.GetServices().Where(x => x.ServiceName.IndexOf("fgst", StringComparison.OrdinalIgnoreCase) != -1).ToList();
@@ -50,7 +46,6 @@ namespace InfoPC
                 File.WriteAllLines(SettingsFileName, new string[] { string.Empty });
                 Thread.Sleep(200);
             }
-
             var readAllLines = File.ReadAllLines(SettingsFileName).ToList();
             ServiceControllers.AddRange(services.Select(x => new ServiceControllerVM() { ServiceController = x }));
             readAllLines.Where(x => !string.IsNullOrWhiteSpace(x) && !services.Select(xx => xx.ServiceName).Contains(x)).ToList().ForEach(x =>
@@ -89,7 +84,6 @@ namespace InfoPC
                 x.OnPropertyChanged("IsStopped");
             });
         }
-
         public ICommand StartCommand { get; set; }
         public ICommand StopCommand { get; set; }
         public ICommand RestartCommand { get; set; }
