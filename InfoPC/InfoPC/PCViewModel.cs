@@ -134,6 +134,9 @@ namespace InfoPC
 
         public PCViewModel()
         {
+            GetPCName();
+            GetDomainName();
+            GetBuildVersionOS();
             UpdateInfo();
             _timer = new Timer(Callback, null, 1000 * 5, Timeout.Infinite);
             CopyToClipboardCommand = new RelayCommand(CopyToClipboardExecute);
@@ -222,43 +225,36 @@ namespace InfoPC
             if (_serverLogsFiles.Length > 0)
             {
                 Directory.CreateDirectory(_tempLogsFilesPath);
-                Task.Run(async () => await CopyFiles(_serverLogsFiles, _tempLogsFilesPath));
-                Task.Run(async () => await ArchiveFiles(_tempLogsFilesPath, _zipArchiveServerLogs));
+                Task.Run(async () => await CopyAndArchiveFiles(_serverLogsFiles, _tempLogsFilesPath, _zipArchiveServerLogs));
             }
             string[] consoleLogsFiles = Directory.GetFiles(_consoleLogsFiles, "*.log");
             if (_serverLogsFiles.Length > 0)
             {
-                Directory.CreateDirectory(_tempLogsFilesPath);
-                Task.Run(async () => await CopyFiles(consoleLogsFiles, _tempConsoleLogsFilesPath));
-                Task.Run(async () => await ArchiveFiles(_tempConsoleLogsFilesPath, _zipArchiveConsoleLogs));
+                Directory.CreateDirectory(_tempConsoleLogsFilesPath);
+                Task.Run(async () => await CopyAndArchiveFiles(consoleLogsFiles, _tempConsoleLogsFilesPath, _zipArchiveConsoleLogs));
             }
            
             string[] agentHostLogsFiles = Directory.GetFiles(_agentHostLogsFiles, "*.log");
             if (agentHostLogsFiles.Length > 0)
             {
                 Directory.CreateDirectory(_tempAgentLogsFilesPath);
-                Task.Run(async () => await CopyFiles(agentHostLogsFiles, _tempAgentLogsFilesPath));
+                Task.Run(async () => await CopyAndArchiveFiles(agentHostLogsFiles, _tempAgentLogsFilesPath, _zipArchiveAgentsLogs));
             }
             string[] agentCssLogsFiles = Directory.GetFiles(_agentCssLogsFiles, "*.log");
             if (agentCssLogsFiles.Length > 0)
             {
                 Directory.CreateDirectory(_tempAgentLogsFilesPath);
-                Task.Run(async () => await CopyFiles(agentCssLogsFiles, _tempAgentLogsFilesPath));
-                Task.Run(async () => await ArchiveFiles(_tempAgentLogsFilesPath, _zipArchiveAgentsLogs));
+                Task.Run(async () => await CopyAndArchiveFiles(agentCssLogsFiles, _tempAgentLogsFilesPath, _zipArchiveAgentsLogs));
             }
             
         }
-        private async Task CopyFiles(string[] files, string path)
+        private async Task CopyAndArchiveFiles(string[] files, string pathFiles, string pathArchive)
         {
-            await Task.Delay(500);
+            await Task.Delay(100);
             foreach (var filename in files)
             {
-                File.Copy(filename, Path.Combine(path, Path.GetFileName(filename)), true);
+                File.Copy(filename, Path.Combine(pathFiles, Path.GetFileName(filename)), true);
             }
-        }
-        private async Task ArchiveFiles(string pathFiles, string pathArchive)
-        {
-            await Task.Delay(500);
             ZipFile.CreateFromDirectory(pathFiles, pathArchive);
         }
 
@@ -297,11 +293,13 @@ namespace InfoPC
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                NameAdapter.Clear();
                 foreach (var item in GetAllAdapter().Get())
                 {
-                    IsChecked = (bool)item.Properties["NetEnabled"].Value;
-                    NameAdapter.Add(new CheckBoxAdapterItem(IsChecked, item["NetConnectionId"].ToString()));
+                    if (NameAdapter.FirstOrDefault(x => x.NameAdapter == item["NetConnectionId"].ToString()) == null)
+                    {
+                        IsChecked = (bool)item.Properties["NetEnabled"].Value;
+                        NameAdapter.Add(new CheckBoxAdapterItem(IsChecked, item["NetConnectionId"].ToString()));
+                    }
                 }
             });
         }
@@ -313,13 +311,10 @@ namespace InfoPC
         {
             GetFreeSpace();
             GetUserName();
-            GetPCName();
-            GetDomainName();
             GetIPv4Adress();
             GetIPv6Adress();
             GetAdapterName();
             GetVersionNumber();
-            GetBuildVersionOS();
         }
 
     }

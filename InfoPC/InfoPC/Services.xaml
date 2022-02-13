@@ -6,14 +6,15 @@
         xmlns:local="clr-namespace:InfoPC"
         xmlns:serviceProcess="clr-namespace:System.ServiceProcess;assembly=System.ServiceProcess"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" d:DataContext="{d:DesignInstance d:Type={x:Type local:MainWindow} }">
+        d:DataContext="{d:DesignInstance Type=local:ServiceControllerVM}"
+        Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.Resources>
-            <DataTemplate x:Key="ItemTemplate" DataType="local:ServiceControllerVM">
+            <DataTemplate x:Key="ItemTemplate">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="300" />
@@ -47,9 +48,9 @@
 
         <Grid Grid.Row="0">
             <StackPanel Orientation="Horizontal">
-                <Button Click="StartAll">Start All</Button>
-                <Button Click="StopAll">Stop All</Button>
-                <Button Click="RestartAll">Restart All</Button>
+                <Button Command="{Binding StartAllCommand}">Start All</Button>
+                <Button Command="{Binding StopAllCommand}">Stop All</Button>
+                <Button Command="{Binding RestartAllCommand}">Restart All</Button>
             </StackPanel>
         </Grid>
         <ItemsControl Grid.Row="1" ItemsSource="{Binding ServiceControllers}"
