@@ -19,16 +19,15 @@ namespace InfoPC
     {
 
         private const string _serverLogsFilesPath = @"C:\ProgramData\Falcongaze SecureTower\Logs";
-        private readonly string _consoleLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\Falcongaze SecureTower";
         private const string _agentHostLogsFiles = @"C:\ProgramData\Falcongaze SecureTower\EPA";
-        private readonly string _agentCssLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Falcongaze SecureTower";
         private const string _tempLogsFilesPath = @"C:\ProgramData\Logs\ServerLogs";
         private const string _tempConsoleLogsFilesPath = @"C:\ProgramData\Logs\ConsoleLogs";
         private const string _tempAgentLogsFilesPath = @"C:\ProgramData\Logs\AgentLogs";
         private const string _zipArchiveServerLogs = @"C:\ServerLogs.zip";
         private const string _zipArchiveConsoleLogs = @"C:\ConsoleLogs.zip";
         private const string _zipArchiveAgentsLogs = @"C:\AgentsLogs.zip";
-        private string[] _serverLogsFiles;
+        private readonly string _consoleLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\Falcongaze SecureTower";
+        private readonly string _agentCssLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Falcongaze SecureTower";
         private ObservableCollection<string> _ipv4Adress;
         private ObservableCollection<string> _ipv6Adress;
         private ObservableCollection<CheckBoxAdapterItem> _nameAdapter = new ObservableCollection<CheckBoxAdapterItem>();
@@ -197,7 +196,7 @@ namespace InfoPC
         private void Callback(object state)
         {
             UpdateInfo();
-            _timer.Change(1000 * 10, Timeout.Infinite);
+            _timer.Change(5000 * 10, Timeout.Infinite);
         }
         private void CopyToClipboardExecute(object arg)
         {
@@ -221,36 +220,41 @@ namespace InfoPC
         }
         private void CopyLogsExecute(object arg)
         {
-            //_serverLogsFiles = Directory.GetFiles(_serverLogsFilesPath, "*.log", SearchOption.AllDirectories);
+            try
+            {
+                File.Delete(_zipArchiveAgentsLogs);
+                File.Delete(_zipArchiveConsoleLogs);
+                File.Delete(_zipArchiveServerLogs);
+            }
+            catch
+            { 
+
+            }
             if (GetFilesName(_serverLogsFilesPath).Length > 0)
             {
                 Directory.CreateDirectory(_tempLogsFilesPath);
                 Task.Run(async () => await CopyAndArchiveFiles(GetFilesName(_serverLogsFilesPath), _tempLogsFilesPath, _zipArchiveServerLogs));
             }
-           // string[] consoleLogsFiles = Directory.GetFiles(_consoleLogsFiles, "*.log");
             if (GetFilesName(_consoleLogsFiles).Length > 0)
             {
                 Directory.CreateDirectory(_tempConsoleLogsFilesPath);
                 Task.Run(async () => await CopyAndArchiveFiles(GetFilesName(_consoleLogsFiles), _tempConsoleLogsFilesPath, _zipArchiveConsoleLogs));
             }
-
-           // string[] agentHostLogsFiles = Directory.GetFiles(_agentHostLogsFiles, "*.log");
             if (GetFilesName(_agentHostLogsFiles).Length > 0)
             {
                 Directory.CreateDirectory(_tempAgentLogsFilesPath);
                 Task.Run(async () => await CopyAndArchiveFiles(GetFilesName(_agentHostLogsFiles), _tempAgentLogsFilesPath, _zipArchiveAgentsLogs));
             }
-           // string[] agentCssLogsFiles = Directory.GetFiles(_agentCssLogsFiles, "*.log");
             if (GetFilesName(_agentCssLogsFiles).Length > 0)
             {
                 Directory.CreateDirectory(_tempAgentLogsFilesPath);
                 Task.Run(async () => await CopyAndArchiveFiles(GetFilesName(_agentCssLogsFiles), _tempAgentLogsFilesPath, _zipArchiveAgentsLogs));
             }
-
         }
         private string[] GetFilesName(string pathFiles)
         {
-        return Directory.GetFiles(pathFiles, "*.log", SearchOption.AllDirectories);
+            string[] noFiles = new string[0];
+            return Directory.Exists(pathFiles) ? Directory.GetFiles(pathFiles, "*.log", SearchOption.AllDirectories) : noFiles;
         }
         private async Task CopyAndArchiveFiles(string[] files, string pathFiles, string pathArchive)
         {
@@ -260,8 +264,8 @@ namespace InfoPC
                 File.Copy(filename, Path.Combine(pathFiles, Path.GetFileName(filename)), true);
             }
             ZipFile.CreateFromDirectory(pathFiles, pathArchive);
+            Directory.Delete(pathFiles);
         }
-
         private void ChangeStatusEthenetExecute(object arg)
         {
             foreach (ManagementObject item in GetAllAdapter().Get())
@@ -297,18 +301,11 @@ namespace InfoPC
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                NameAdapter = new ObservableCollection<CheckBoxAdapterItem>();
                 foreach (var item in GetAllAdapter().Get())
                 {
-                    if (NameAdapter.FirstOrDefault(x => x.NameAdapter == item["NetConnectionId"].ToString()) != null)
-                    {
-
-                        IsChecked = (bool)item.Properties["NetEnabled"].Value;
-                    }
-                    else
-                    {
-                        IsChecked = (bool)item.Properties["NetEnabled"].Value;
-                        NameAdapter.Add(new CheckBoxAdapterItem(IsChecked, item["NetConnectionId"].ToString()));
-                    }
+                    IsChecked = (bool)item.Properties["NetEnabled"].Value;
+                    NameAdapter.Add(new CheckBoxAdapterItem(IsChecked, item["NetConnectionId"].ToString()));
                 }
             });
         }
@@ -325,7 +322,6 @@ namespace InfoPC
             GetAdapterName();
             GetVersionNumber();
         }
-
     }
 }
 
