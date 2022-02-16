@@ -14,7 +14,7 @@ namespace InfoPC
             InitializeComponent();
             DataContext = new PCViewModel();
             Left = SystemParameters.WorkArea.Width - Width;
-            
+            AutoUpdaterDotNET.AutoUpdater.Start("//PG1038-B/Updater/update.xml");
     }
         
     }

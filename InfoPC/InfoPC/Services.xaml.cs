@@ -12,7 +12,7 @@ namespace InfoPC
         public Services()
         {
             InitializeComponent();
-            DataContext = new ServiceControllerVM();
+            DataContext = new ServiceVM();
         }
 
         
