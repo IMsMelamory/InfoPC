@@ -104,13 +104,6 @@
                  Text="Версия SecureTower" >
             <TextBox.Style>
                 <Style>
-                    <Setter Property="TextBox.IsReadOnly" Value="True" />
-                    <Setter Property="TextBox.BorderThickness" Value="0" />
-                    <Setter Property="TextBox.TextWrapping" Value="Wrap" />
-                    <Setter Property="TextBox.Background" Value="Transparent" />
-                    <Setter Property="TextBox.Foreground" Value="White" />
-                    <Setter Property="TextBox.FontSize" Value="14" />
-                    <Setter Property="TextBox.Margin" Value="0,0,0,5"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsProduct}" Value="false">
                             <Setter Property="TextBox.Opacity" Value="0" />

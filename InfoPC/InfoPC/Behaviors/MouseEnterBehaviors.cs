@@ -24,7 +24,6 @@ namespace InfoPC.Behaviors
         {
             _mousePositionOnMainWindowX = Application.Current.MainWindow.PointFromScreen(new Point(0, 0));
             _heightWindows = (int)Application.Current.MainWindow.Height;
-            var _mousePositionOnScreen = MouseWindowsHelper.GetMousePosition();
             Application.Current.MainWindow.Visibility = Visibility.Collapsed;
             Task.Run(async () => await ShowWindow());
         }
