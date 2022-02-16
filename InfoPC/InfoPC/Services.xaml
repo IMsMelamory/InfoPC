@@ -9,6 +9,14 @@
         d:DataContext="{d:DesignInstance Type=local:ServiceControllerVM}"
         Title="Services Secure Tower" 
         Height="450" Width="600">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="FontFamily" Value="Verdana" />
+            <Setter Property="Background" Value="Gray" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Margin" Value="5,0,0,0" />
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -37,24 +45,38 @@
                             </Style>
                         </Label.Style>
                     </Label>
-                    <Label Grid.Column="1">Status:</Label>
-                    <Label Grid.Column="2" Content="{Binding Status}" />
-                    <Button Grid.Column="3" Command="{Binding StartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" CommandParameter="{Binding }">Start</Button>
-                    <Button Grid.Column="4" Command="{Binding StopCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" CommandParameter="{Binding }">Stop</Button>
-                    <Button Grid.Column="5" Command="{Binding RestartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" CommandParameter="{Binding }">Restart</Button>
+                    <Label Grid.Column="1" 
+                           Content="Status:"/>
+                    <Label Grid.Column="2" 
+                           Content="{Binding Status}" />
+                    <Button Grid.Column="3" 
+                            Command="{Binding StartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Services}}}" 
+                            CommandParameter="{Binding }"
+                            Content="Start"/>
+                    <Button Grid.Column="4" 
+                            Command="{Binding StopCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Services}}}" 
+                            CommandParameter="{Binding }"
+                            Content="Stop"/>
+                    <Button Grid.Column="5" 
+                            Command="{Binding RestartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Services}}}" 
+                            CommandParameter="{Binding }"
+                            Content="Restart"/>
                 </Grid>
             </DataTemplate>
         </Grid.Resources>
-
         <Grid Grid.Row="0">
             <StackPanel Orientation="Horizontal">
-                <Button Command="{Binding StartAllCommand}">Start All</Button>
-                <Button Command="{Binding StopAllCommand}">Stop All</Button>
-                <Button Command="{Binding RestartAllCommand}">Restart All</Button>
+                <Button Command="{Binding StartAllCommand}" 
+                        Content="Start All"/>
+                <Button Command="{Binding StopAllCommand}" 
+                        Content="Stop All"/>
+                <Button Command="{Binding RestartAllCommand}"  
+                        Content="Restart All"/>
             </StackPanel>
         </Grid>
-        <ItemsControl Grid.Row="1" ItemsSource="{Binding ServiceControllers}"
+        <ItemsControl Grid.Row="1" 
+                      ItemsSource="{Binding ServiceControllers}"
                       AlternationCount="2"
-                      ItemTemplate="{StaticResource ItemTemplate}"></ItemsControl>
+                      ItemTemplate="{StaticResource ItemTemplate}"/>
     </Grid>
 </Window>
