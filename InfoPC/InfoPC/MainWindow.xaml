@@ -25,6 +25,14 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Ctrl"
+                    Key="Q"
+                    Command="{Binding ShowWindowServicesCommand}" />
+        <KeyBinding Modifiers="Ctrl"
+                    Key="W"
+                    Command="{Binding CopyLogsCommand}" />
+    </Window.InputBindings>
     <Grid>
         <ineractivity:Interaction.Behaviors>
             <custom:MouseEnterBehaviors/>

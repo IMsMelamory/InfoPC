@@ -26,8 +26,8 @@ namespace InfoPC
         private const string _zipArchiveServerLogs = @"C:\Logs\ServerLogs.zip";
         private const string _zipArchiveConsoleLogs = @"C:\Logs\ConsoleLogs.zip";
         private const string _zipArchiveAgentsLogs = @"C:\Logs\AgentsLogs.zip";
-        private readonly string _consoleLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\Falcongaze SecureTower";
-        private readonly string _agentCssLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Falcongaze SecureTower";
+        private readonly string _consoleLogsFiles = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Falcongaze SecureTower";
+        private readonly string _agentCssLogsFiles = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Falcongaze SecureTower";
         private ObservableCollection<string> _ipv4Adress;
         private ObservableCollection<string> _ipv6Adress;
         private ObservableCollection<CheckBoxAdapterItem> _nameAdapter = new ObservableCollection<CheckBoxAdapterItem>();
