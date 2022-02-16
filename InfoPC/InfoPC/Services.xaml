@@ -6,9 +6,10 @@
         xmlns:local="clr-namespace:InfoPC"
         xmlns:serviceProcess="clr-namespace:System.ServiceProcess;assembly=System.ServiceProcess"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=local:ServiceControllerVM}"
+        d:DataContext="{d:DesignInstance Type=local:ServiceVM}"
         Title="Services Secure Tower" 
-        Height="450" Width="600">
+        SizeToContent="Height"
+        Height="Auto" Width="600">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="FontFamily" Value="Verdana" />

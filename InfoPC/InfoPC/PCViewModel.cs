@@ -20,12 +20,12 @@ namespace InfoPC
 
         private const string _serverLogsFilesPath = @"C:\ProgramData\Falcongaze SecureTower\Logs";
         private const string _agentHostLogsFiles = @"C:\ProgramData\Falcongaze SecureTower\EPA";
-        private const string _tempLogsFilesPath = @"C:\ProgramData\Logs\ServerLogs";
-        private const string _tempConsoleLogsFilesPath = @"C:\ProgramData\Logs\ConsoleLogs";
-        private const string _tempAgentLogsFilesPath = @"C:\ProgramData\Logs\AgentLogs";
-        private const string _zipArchiveServerLogs = @"C:\ServerLogs.zip";
-        private const string _zipArchiveConsoleLogs = @"C:\ConsoleLogs.zip";
-        private const string _zipArchiveAgentsLogs = @"C:\AgentsLogs.zip";
+        private const string _tempLogsFilesPath = @"C:\Logs\ServerLogs";
+        private const string _tempConsoleLogsFilesPath = @"C:\Logs\ConsoleLogs";
+        private const string _tempAgentLogsFilesPath = @"C:\Logs\AgentLogs";
+        private const string _zipArchiveServerLogs = @"C:\Logs\ServerLogs.zip";
+        private const string _zipArchiveConsoleLogs = @"C:\Logs\ConsoleLogs.zip";
+        private const string _zipArchiveAgentsLogs = @"C:\Logs\AgentsLogs.zip";
         private readonly string _consoleLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Roaming\Falcongaze SecureTower";
         private readonly string _agentCssLogsFiles = @"C:\Users\" + Environment.UserName + @"\AppData\Local\Falcongaze SecureTower";
         private ObservableCollection<string> _ipv4Adress;
@@ -222,13 +222,11 @@ namespace InfoPC
         {
             try
             {
-                File.Delete(_zipArchiveAgentsLogs);
-                File.Delete(_zipArchiveConsoleLogs);
-                File.Delete(_zipArchiveServerLogs);
+                Directory.Delete(@"C:\Logs");
             }
             catch
-            { 
-
+            {
+                MessageBox.Show("Не удалось удалить папку. Занята другим процессом");
             }
             if (GetFilesName(_serverLogsFilesPath).Length > 0)
             {
@@ -264,7 +262,6 @@ namespace InfoPC
                 File.Copy(filename, Path.Combine(pathFiles, Path.GetFileName(filename)), true);
             }
             ZipFile.CreateFromDirectory(pathFiles, pathArchive);
-            Directory.Delete(pathFiles);
         }
         private void ChangeStatusEthenetExecute(object arg)
         {
