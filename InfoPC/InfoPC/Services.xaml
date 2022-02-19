@@ -13,8 +13,6 @@
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="FontFamily" Value="Verdana" />
-            <Setter Property="Background" Value="Gray" />
-            <Setter Property="Foreground" Value="White" />
             <Setter Property="Margin" Value="5,0,0,0" />
         </Style>
     </Window.Resources>
