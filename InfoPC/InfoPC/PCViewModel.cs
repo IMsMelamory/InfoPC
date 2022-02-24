@@ -11,8 +11,7 @@ using System.Collections.ObjectModel;
 using System.IO.Compression;
 using System.Windows.Input;
 using System.Threading.Tasks;
-using InfoPC.Helpers;
-
+using mrousavy;
 namespace InfoPC
 {
     public class PCViewModel : BaseViewModel
@@ -143,8 +142,6 @@ namespace InfoPC
             ChangeStatusEthenetCommand = new RelayCommand(ChangeStatusEthenetExecute);
             CopyLogsCommand = new RelayCommand(CopyLogsExecute);
             ShowWindowServicesCommand = new RelayCommand(ShowWindowServicesExecute);
-
-
         }
         public ICommand CopyToClipboardCommand { get; set; }
         public ICommand CloseWindowsCommand { get; set; }
@@ -228,41 +225,47 @@ namespace InfoPC
             {
                 MessageBox.Show("Не удалось удалить папку. Занята другим процессом");
             }
-            if (GetFilesName(_serverLogsFilesPath).Length > 0)
+            string[] serverLogsFiles = GetFilesName(_serverLogsFilesPath);
+            if (serverLogsFiles.Length > 0)
             {
                 Directory.CreateDirectory(_tempLogsFilesPath);
-                Task.Run(async () => await CopyAndArchiveFiles(GetFilesName(_serverLogsFilesPath), _tempLogsFilesPath, _zipArchiveServerLogs));
+                Task.Run(() => CopyAndArchiveFiles(serverLogsFiles, _tempLogsFilesPath, _zipArchiveServerLogs));
             }
-            if (GetFilesName(_consoleLogsFiles).Length > 0)
+            string[] consoleLogsFiles = GetFilesName(_consoleLogsFiles);
+            if (consoleLogsFiles.Length > 0)
             {
                 Directory.CreateDirectory(_tempConsoleLogsFilesPath);
-                Task.Run(async () => await CopyAndArchiveFiles(GetFilesName(_consoleLogsFiles), _tempConsoleLogsFilesPath, _zipArchiveConsoleLogs));
+                Task.Run(() => CopyAndArchiveFiles(consoleLogsFiles, _tempConsoleLogsFilesPath, _zipArchiveConsoleLogs));
             }
-            if (GetFilesName(_agentHostLogsFiles).Length > 0)
+            string[] agentHostLogsFiles = GetFilesName(_agentHostLogsFiles);
+            if (agentHostLogsFiles.Length > 0)
             {
                 Directory.CreateDirectory(_tempAgentLogsFilesPath);
-                Task.Run(async () => await CopyAndArchiveFiles(GetFilesName(_agentHostLogsFiles), _tempAgentLogsFilesPath, _zipArchiveAgentsLogs));
+                Task.Run(() => CopyAndArchiveFiles(agentHostLogsFiles, _tempAgentLogsFilesPath, _zipArchiveAgentsLogs));
             }
-            if (GetFilesName(_agentCssLogsFiles).Length > 0)
+            string[] agentCssLogsFiles = GetFilesName(_agentCssLogsFiles);
+            if (agentCssLogsFiles.Length > 0)
             {
                 Directory.CreateDirectory(_tempAgentLogsFilesPath);
-                Task.Run(async () => await CopyAndArchiveFiles(GetFilesName(_agentCssLogsFiles), _tempAgentLogsFilesPath, _zipArchiveAgentsLogs));
+                Task.Run(() =>  CopyAndArchiveFiles(agentCssLogsFiles, _tempAgentLogsFilesPath, _zipArchiveAgentsLogs));
             }
         }
         private string[] GetFilesName(string pathFiles)
         {
-            string[] noFiles = new string[0];
-            return Directory.Exists(pathFiles) ? Directory.GetFiles(pathFiles, "*.log", SearchOption.AllDirectories) : noFiles;
+            return Directory.GetFiles(pathFiles, "*.log", SearchOption.AllDirectories);
         }
-        private async Task CopyAndArchiveFiles(string[] files, string pathFiles, string pathArchive)
+        private Task CopyAndArchiveFiles(string[] files, string pathFiles, string pathArchive)
         {
-            await Task.Delay(100);
-            foreach (var filename in files)
+            return Task.Run(() =>
             {
-                File.Copy(filename, Path.Combine(pathFiles, Path.GetFileName(filename)), true);
-            }
-            ZipFile.CreateFromDirectory(pathFiles, pathArchive);
+                foreach (var filename in files)
+                {
+                    File.Copy(filename, Path.Combine(pathFiles, Path.GetFileName(filename)), true);
+                }
+                ZipFile.CreateFromDirectory(pathFiles, pathArchive);
+            });
         }
+
         private void ChangeStatusEthenetExecute(object arg)
         {
             foreach (ManagementObject item in GetAllAdapter().Get())
@@ -298,7 +301,7 @@ namespace InfoPC
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                NameAdapter = new ObservableCollection<CheckBoxAdapterItem>();
+                NameAdapter.Clear();
                 foreach (var item in GetAllAdapter().Get())
                 {
                     IsChecked = (bool)item.Properties["NetEnabled"].Value;

@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InfoPC"
-        xmlns:serviceProcess="clr-namespace:System.ServiceProcess;assembly=System.ServiceProcess"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=local:ServiceVM}"
         Title="Services Secure Tower" 
@@ -12,7 +11,6 @@
         Height="Auto" Width="600">
     <Window.Resources>
         <Style TargetType="Button">
-            <Setter Property="FontFamily" Value="Verdana" />
             <Setter Property="Margin" Value="5,0,0,0" />
         </Style>
     </Window.Resources>
@@ -22,7 +20,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.Resources>
-            <DataTemplate x:Key="ItemTemplate">
+            <DataTemplate x:Key="ItemTemplate" DataType="local:ServiceControllerVM">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="300" />
@@ -49,15 +47,15 @@
                     <Label Grid.Column="2" 
                            Content="{Binding Status}" />
                     <Button Grid.Column="3" 
-                            Command="{Binding StartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Services}}}" 
+                            Command="{Binding DataContext.StartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Services}}}" 
                             CommandParameter="{Binding }"
                             Content="Start"/>
                     <Button Grid.Column="4" 
-                            Command="{Binding StopCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Services}}}" 
+                            Command="{Binding DataContext.StopCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Services}}}" 
                             CommandParameter="{Binding }"
                             Content="Stop"/>
                     <Button Grid.Column="5" 
-                            Command="{Binding RestartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Services}}}" 
+                            Command="{Binding DataContext.RestartCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Services}}}" 
                             CommandParameter="{Binding }"
                             Content="Restart"/>
                 </Grid>

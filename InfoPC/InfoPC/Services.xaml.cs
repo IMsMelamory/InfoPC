@@ -13,6 +13,7 @@ namespace InfoPC
         {
             InitializeComponent();
             DataContext = new ServiceVM();
+
         }
 
         

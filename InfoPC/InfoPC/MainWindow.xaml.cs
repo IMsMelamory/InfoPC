@@ -1,5 +1,7 @@
-﻿using System;
+﻿using mrousavy;
+using System;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 
 namespace InfoPC
@@ -14,9 +16,7 @@ namespace InfoPC
             InitializeComponent();
             DataContext = new PCViewModel();
             Left = SystemParameters.WorkArea.Width - Width;
-            
-    }
-        
+        }
     }
     }
 
